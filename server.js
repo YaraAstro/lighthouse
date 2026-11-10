@@ -5,6 +5,32 @@ import { startFlow, desktopConfig } from 'lighthouse';
 const app = express();
 const PORT = 3000;
 
+// Safely close Puppeteer and terminate all Chrome pages & child processes on Windows
+async function closeBrowserSafely(browser, timeoutMs = 2500) {
+  if (!browser) return;
+  try {
+    const pages = await browser.pages().catch(() => []);
+    for (const p of pages) {
+      await p.close().catch(() => {});
+    }
+  } catch (e) {}
+
+  let isClosed = false;
+  const closePromise = browser.close().then(() => { isClosed = true; }).catch(() => {});
+  const timeoutPromise = new Promise(resolve => setTimeout(resolve, timeoutMs));
+
+  await Promise.race([closePromise, timeoutPromise]);
+
+  if (!isClosed) {
+    try {
+      const proc = browser.process();
+      if (proc && !proc.killed) {
+        proc.kill('SIGKILL');
+      }
+    } catch (e) {}
+  }
+}
+
 // Serve the static HTML file from the "public" folder
 app.use(express.static('public'));
 
@@ -15,12 +41,23 @@ app.get('/scan', async (req, res) => {
   const throttling = req.query.throttling || (device === 'desktop' ? 'fast4g' : 'mobile4g');
   const jsSampling = req.query.jsSampling === 'true';
   const agentic = req.query.agentic !== 'false';
+  const multiPage = req.query.multiPage === 'true';
+  const maxPages = Math.min(Math.max(parseInt(req.query.maxPages || '3', 10), 1), 5);
 
   if (!targetUrl) {
     return res.status(400).send('URL is required');
   }
 
-  console.log(`Starting scan for: ${targetUrl} [${device.toUpperCase()} | Throttling: ${throttling} | JS Sampling: ${jsSampling} | Agentic: ${agentic}]`);
+  // Support comma-separated, semicolon-separated, or line-separated URLs
+  const urlsToScan = targetUrl
+    .split(/[\r\n,;]+/)
+    .map(u => u.trim())
+    .filter(u => Boolean(u))
+    .map(u => (/^https?:\/\//i.test(u) ? u : 'https://' + u));
+
+  const primaryUrl = urlsToScan[0];
+
+  console.log(`Starting scan for: ${urlsToScan.join(', ')} [${device.toUpperCase()} | Throttling: ${throttling} | Multi-Page: ${multiPage || urlsToScan.length > 1} | MaxPages: ${maxPages}]`);
 
   // Configure throttling profile
   let throttlingSettings;
@@ -109,11 +146,11 @@ app.get('/scan', async (req, res) => {
     const flow = await startFlow(page, flowOptions);
 
     // Step 1: Initial Navigation & Page Load
-    await flow.navigate(targetUrl, { stepName: 'Navigation & Initial Load' });
+    await flow.navigate(primaryUrl, { stepName: `Initial Page: ${new URL(primaryUrl).pathname || '/'}` });
 
     // Step 2: Agentic Synthetic User Interaction (if enabled)
     if (agentic) {
-      console.log(`Running Agentic interaction timespan for ${targetUrl}...`);
+      console.log(`Running Agentic interaction timespan for ${primaryUrl}...`);
       await flow.startTimespan({ stepName: 'Agentic User Interaction & Scroll Telemetry' });
       await page.evaluate(() => window.scrollBy({ top: 800, behavior: 'smooth' }));
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -122,20 +159,67 @@ app.get('/scan', async (req, res) => {
       await flow.endTimespan();
     }
 
+    // Step 3: Multi-Page Scan (explicit URLs or auto-discovered sub-pages)
+    if (urlsToScan.length > 1) {
+      for (let i = 1; i < Math.min(urlsToScan.length, maxPages); i++) {
+        const nextUrl = urlsToScan[i];
+        console.log(`Scanning additional page (${i + 1}/${Math.min(urlsToScan.length, maxPages)}): ${nextUrl}`);
+        try {
+          await flow.navigate(nextUrl, { stepName: `Page ${i + 1}: ${new URL(nextUrl).pathname || nextUrl}` });
+        } catch (pageErr) {
+          console.warn(`Failed to audit page ${nextUrl}:`, pageErr.message);
+        }
+      }
+    } else if (multiPage) {
+      console.log(`Discovering sub-pages for multi-page audit on ${primaryUrl} (limit: ${maxPages - 1})...`);
+      const origin = new URL(primaryUrl).origin;
+      const discoveredSubPages = await page.evaluate((orig, limit) => {
+        const anchors = Array.from(document.querySelectorAll('a[href]'));
+        const found = [];
+        for (const a of anchors) {
+          try {
+            const parsed = new URL(a.href, window.location.origin);
+            if (parsed.origin === orig && parsed.pathname !== '/' && parsed.pathname !== window.location.pathname) {
+              if (!parsed.pathname.match(/\.(pdf|zip|png|jpe?g|svg|webp|mp4|gif|ico|woff2?|css|js)$/i) && !parsed.hash) {
+                if (!found.includes(parsed.href)) {
+                  found.push(parsed.href);
+                }
+              }
+            }
+          } catch(e) {}
+        }
+        return found.slice(0, limit);
+      }, origin, maxPages - 1);
+
+      let pageIndex = 2;
+      for (const subUrl of discoveredSubPages) {
+        console.log(`Scanning discovered sub-page (${pageIndex}): ${subUrl}`);
+        try {
+          await flow.navigate(subUrl, { stepName: `Sub-Page ${pageIndex}: ${new URL(subUrl).pathname}` });
+          pageIndex++;
+        } catch (subErr) {
+          console.warn(`Failed to audit subpage ${subUrl}:`, subErr.message);
+        }
+      }
+    }
+
     // Generate the report as an HTML string
     const htmlReport = await flow.generateReport();
     
     // Send the raw HTML directly to the browser
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(htmlReport);
     
-    console.log(`Scan complete for: ${targetUrl}`);
+    console.log(`Scan complete for: ${primaryUrl}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send(`An error occurred while scanning the website: ${error.message || error}`);
+    if (!res.headersSent) {
+      res.status(500).send(`An error occurred while scanning the website: ${error.message || error}`);
+    }
   } finally {
     if (browser) {
-      await browser.close().catch(() => {});
+      // Clean up browser safely in background without blocking response flush or hanging the handler
+      closeBrowserSafely(browser).catch(() => {});
     }
   }
 });

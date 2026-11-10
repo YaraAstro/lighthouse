@@ -3,8 +3,9 @@ import puppeteer from 'puppeteer';
 import { startFlow } from 'lighthouse';
 
 async function runScan() {
-  const targetUrl = process.argv[2] || 'https://github.com';
-  console.log(`Starting scan for: ${targetUrl}`);
+  const cliArgs = process.argv.slice(2);
+  const targetUrls = cliArgs.length > 0 ? cliArgs : ['https://github.com'];
+  console.log(`Starting multi-page scan for: ${targetUrls.join(', ')}`);
 
   let browser;
   try {
@@ -21,17 +22,20 @@ async function runScan() {
     });
     const page = await browser.newPage();
 
-    const flow = await startFlow(page, { name: `Scan for ${targetUrl}` });
+    const flow = await startFlow(page, { name: `Multi-Page Audit: ${targetUrls[0]}` });
 
-    console.log(`Navigating to ${targetUrl}...`);
-    await flow.navigate(targetUrl, { stepName: 'Page Load' });
+    for (let i = 0; i < targetUrls.length; i++) {
+      const url = targetUrls[i];
+      console.log(`Scanning page (${i + 1}/${targetUrls.length}): ${url}...`);
+      await flow.navigate(url, { stepName: `Page: ${new URL(url).pathname || url}` });
+    }
 
-    console.log('Generating Lighthouse report...');
+    console.log('Generating unified multi-page Lighthouse report...');
     const htmlReport = await flow.generateReport();
     const outputFile = 'report.html';
     fs.writeFileSync(outputFile, htmlReport);
 
-    console.log(`Done! Open ${outputFile} to view the results.`);
+    console.log(`Done! Open ${outputFile} to view the multi-page results.`);
   } catch (error) {
     console.error('Scan failed:', error);
   } finally {

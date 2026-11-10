@@ -4,24 +4,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lighthouse Web Performance Scanner</title>
+  <title>Lighthouse Web Performance Scanner & Site Crawler</title>
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'><path d='M12 2L9 8h6l-3-6zm-1 8h2v3h-2v-3zm-3 5h8v2H8v-2zm-2 4h12v3H6v-3z'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <style>
     :root {
       --bg-dark: #07090e;
       --card-bg: rgba(17, 24, 39, 0.72);
       --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover-border: rgba(56, 189, 248, 0.3);
+      --card-hover-border: rgba(56, 189, 248, 0.35);
       --primary: #38bdf8;
       --primary-hover: #0ea5e9;
       --primary-glow: rgba(56, 189, 248, 0.28);
       --accent: #818cf8;
+      --accent-glow: rgba(129, 140, 248, 0.28);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-subtle: #64748b;
@@ -61,9 +62,9 @@
       top: -150px;
       left: 50%;
       transform: translateX(-50%);
-      width: 800px;
+      width: 860px;
       height: 480px;
-      background: radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.16), rgba(99, 102, 241, 0.08) 50%, transparent 80%);
+      background: radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.16), rgba(99, 102, 241, 0.09) 50%, transparent 80%);
       filter: blur(80px);
       z-index: 0;
       pointer-events: none;
@@ -74,7 +75,7 @@
       top: 0;
       left: 50%;
       width: 2px;
-      height: 380px;
+      height: 400px;
       background: linear-gradient(180deg, rgba(56, 189, 248, 0.6) 0%, rgba(129, 140, 248, 0.15) 60%, transparent 100%);
       transform: translateX(-50%);
       filter: blur(1px);
@@ -93,7 +94,7 @@
       align-items: center;
     }
 
-    /* Top Bar & GitHub Pill */
+    /* Top Bar & Creative GitHub Pill */
     .top-bar {
       width: 100%;
       display: flex;
@@ -104,12 +105,43 @@
       flex-wrap: wrap;
     }
 
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--primary);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
     .github-pill {
       display: inline-flex;
       align-items: center;
       gap: 9px;
       padding: 6px 14px;
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 9999px;
       font-size: 12px;
@@ -120,7 +152,6 @@
       -webkit-backdrop-filter: blur(10px);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
     }
 
     .github-pill:hover {
@@ -178,51 +209,11 @@
       transform: scale(1.3) rotate(72deg);
     }
 
-    /* Header & Badge */
+    /* Header & Branding */
     header {
       text-align: center;
-      margin-bottom: 36px;
-      margin-top: 12px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--primary);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
-    }
-
-    .badge-dot {
-      width: 7px;
-      height: 7px;
-      background: var(--success);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--success);
-      animation: pulseDot 2s infinite;
-    }
-
-    @keyframes pulseDot {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 0.4;
-        transform: scale(0.8);
-      }
+      margin-bottom: 32px;
+      margin-top: 8px;
     }
 
     .logo-wrap {
@@ -236,7 +227,6 @@
       border-radius: 22px;
       box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.22);
       margin-bottom: 20px;
-      position: relative;
     }
 
     .logo-wrap svg {
@@ -259,7 +249,7 @@
     .subtitle {
       font-size: clamp(14px, 2.5vw, 16px);
       color: var(--text-muted);
-      max-width: 580px;
+      max-width: 640px;
       margin: 0 auto;
       font-weight: 400;
     }
@@ -270,7 +260,7 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
-      padding: 32px;
+      padding: 30px;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
@@ -282,6 +272,109 @@
       border-color: rgba(255, 255, 255, 0.14);
     }
 
+    /* PRIMARY FEATURE: Major Scope Selector Tabs */
+    .scope-selector-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .scope-tab {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: rgba(10, 14, 23, 0.75);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      text-align: left;
+      user-select: none;
+    }
+
+    .scope-tab:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.85);
+      transform: translateY(-1px);
+    }
+
+    .scope-tab.active {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(99, 102, 241, 0.08) 100%);
+      box-shadow: 0 4px 20px -2px rgba(56, 189, 248, 0.25), inset 0 0 12px rgba(56, 189, 248, 0.06);
+    }
+
+    .scope-tab-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: all 0.25s;
+    }
+
+    .scope-tab.active .scope-tab-icon {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--primary);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+    }
+
+    .scope-tab-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .scope-tab-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scope-tab-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .scope-tab-badge {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .scope-tab.active .scope-tab-badge {
+      background: #38bdf8;
+      color: #031326;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+    }
+
+    .scope-tab-desc {
+      font-size: 11.5px;
+      color: var(--text-subtle);
+      line-height: 1.35;
+    }
+
+    .scope-tab.active .scope-tab-desc {
+      color: #94a3b8;
+    }
+
+    /* URL Input Bar */
     .input-group {
       position: relative;
       display: flex;
@@ -299,6 +392,11 @@
       box-shadow: 0 0 0 3px var(--primary-glow), inset 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
+    .input-group.multipage-mode-active {
+      border-color: rgba(56, 189, 248, 0.45);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.18), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
     .input-icon {
       display: flex;
       align-items: center;
@@ -306,25 +404,27 @@
       color: var(--text-subtle);
       margin-right: 12px;
       flex-shrink: 0;
+      transition: color 0.2s;
     }
 
-    .input-group:focus-within .input-icon {
+    .input-group:focus-within .input-icon,
+    .input-group.multipage-mode-active .input-icon {
       color: var(--primary);
     }
 
-    input[type="url"] {
+    .url-input {
       width: 100%;
       background: transparent;
       border: none;
       outline: none;
       color: var(--text-main);
       font-family: var(--font-sans);
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 500;
       padding: 10px 0;
     }
 
-    input[type="url"]::placeholder {
+    .url-input::placeholder {
       color: var(--text-subtle);
       font-weight: 400;
     }
@@ -385,7 +485,74 @@
       transform: translateY(0);
     }
 
-    /* Options & Presets Bar */
+    /* Multi-Page Config Pill Bar (Visible when Multi-Page is active) */
+    .multipage-config-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(14, 23, 42, 0.75);
+      border: 1px dashed rgba(56, 189, 248, 0.35);
+      border-radius: var(--radius-sm);
+      margin-top: 14px;
+      font-size: 12px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .multipage-config-bar.open {
+      display: flex;
+    }
+
+    .depth-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .depth-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .depth-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 4px 11px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .depth-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #ffffff;
+    }
+
+    .depth-btn.active {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #031326;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .crawl-info-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #93c5fd;
+      font-size: 11.5px;
+      font-family: var(--font-mono);
+    }
+
+    /* Controls & Presets Row */
     .controls-row {
       display: flex;
       align-items: center;
@@ -432,61 +599,6 @@
       color: var(--primary);
     }
 
-    /* Attractive Segmented Mode Switch */
-    .display-mode-switch {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(10, 14, 23, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 9999px;
-      padding: 3px;
-      gap: 3px;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .mode-switch-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 13px;
-      border-radius: 9999px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      user-select: none;
-    }
-
-    .mode-switch-btn svg {
-      opacity: 0.7;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-
-    .mode-switch-btn:hover {
-      color: var(--text-main);
-    }
-
-    .mode-switch-btn:hover svg {
-      opacity: 1;
-    }
-
-    .mode-switch-btn.active {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(14, 165, 233, 0.14) 100%);
-      border-color: rgba(56, 189, 248, 0.45);
-      color: #ffffff;
-      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25);
-    }
-
-    .mode-switch-btn.active svg {
-      color: var(--primary);
-      opacity: 1;
-      transform: scale(1.05);
-    }
-
     /* Device Mode Switch */
     .device-mode-switch {
       display: inline-flex;
@@ -530,7 +642,51 @@
       color: var(--primary);
     }
 
-    /* Advanced Audit Settings Panel */
+    /* Segmented Display Mode Switch */
+    .display-mode-switch {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(10, 14, 23, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      padding: 3px;
+      gap: 3px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .mode-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 13px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .mode-switch-btn:hover {
+      color: var(--text-main);
+    }
+
+    .mode-switch-btn.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(14, 165, 233, 0.14) 100%);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25);
+    }
+
+    .mode-switch-btn.active svg {
+      color: var(--primary);
+    }
+
+    /* Advanced Audit Settings Drawer */
     .advanced-trigger-wrap {
       width: 100%;
       margin-top: 20px;
@@ -706,232 +862,6 @@
       transform: translateX(16px);
     }
 
-    /* Device Mode Switch */
-    .device-mode-switch {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(10, 14, 23, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 9999px;
-      padding: 3px;
-      gap: 3px;
-    }
-
-    .device-switch-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 9999px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      user-select: none;
-    }
-
-    .device-switch-btn:hover {
-      color: var(--text-main);
-    }
-
-    .device-switch-btn.active {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(14, 165, 233, 0.14) 100%);
-      border-color: rgba(56, 189, 248, 0.45);
-      color: #ffffff;
-      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25);
-    }
-
-    .device-switch-btn.active svg {
-      color: var(--primary);
-    }
-
-    /* Advanced Audit Settings Panel */
-    .advanced-trigger-wrap {
-      width: 100%;
-      margin-top: 20px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .btn-advanced-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-muted);
-      font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-advanced-toggle:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(56, 189, 248, 0.3);
-      color: var(--text-main);
-    }
-
-    .btn-advanced-toggle .chevron {
-      transition: transform 0.25s ease;
-    }
-
-    .btn-advanced-toggle.open .chevron {
-      transform: rotate(180deg);
-    }
-
-    .advanced-panel {
-      display: none;
-      margin-top: 14px;
-      background: rgba(10, 14, 23, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-md);
-      padding: 18px;
-    }
-
-    .advanced-panel.open {
-      display: block;
-      animation: fadeIn 0.25s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-4px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .adv-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-    }
-
-    .adv-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .adv-label {
-      font-size: 11.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #94a3b8;
-    }
-
-    .adv-select {
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--text-main);
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-sans);
-      font-size: 12.5px;
-      outline: none;
-      cursor: pointer;
-      transition: border-color 0.2s;
-      width: 100%;
-    }
-
-    .adv-select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px var(--primary-glow);
-    }
-
-    .adv-toggle-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 10px 12px;
-      background: rgba(15, 23, 42, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.2s;
-      user-select: none;
-    }
-
-    .adv-toggle-row:hover {
-      background: rgba(20, 30, 50, 0.65);
-      border-color: rgba(56, 189, 248, 0.25);
-    }
-
-    .adv-toggle-text {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .adv-toggle-title {
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .adv-toggle-desc {
-      font-size: 11px;
-      color: var(--text-subtle);
-      line-height: 1.35;
-    }
-
-    .custom-switch {
-      position: relative;
-      width: 34px;
-      height: 18px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .custom-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .switch-slider {
-      position: absolute;
-      cursor: pointer;
-      inset: 0;
-      background-color: rgba(255, 255, 255, 0.15);
-      transition: .25s;
-      border-radius: 9999px;
-    }
-
-    .switch-slider:before {
-      position: absolute;
-      content: "";
-      height: 12px;
-      width: 12px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .25s;
-      border-radius: 50%;
-    }
-
-    .custom-switch input:checked+.switch-slider {
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
-      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
-    }
-
-    .custom-switch input:checked+.switch-slider:before {
-      transform: translateX(16px);
-    }
-
     /* Recent Scans Box */
     .recent-scans-wrap {
       margin-top: 24px;
@@ -984,7 +914,7 @@
       color: #93c5fd;
       cursor: pointer;
       transition: all 0.2s;
-      max-width: 260px;
+      max-width: 280px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1094,7 +1024,7 @@
 
     .scan-modal {
       width: 100%;
-      max-width: 540px;
+      max-width: 560px;
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 24px;
@@ -1109,7 +1039,7 @@
       transform: scale(1);
     }
 
-    /* Radar / Lighthouse Beacon Animation */
+    /* Radar / Beacon Animation */
     .radar-box {
       width: 90px;
       height: 90px;
@@ -1138,25 +1068,13 @@
     }
 
     @keyframes rotateRadar {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     @keyframes ripple {
-      0% {
-        transform: scale(0.6);
-        opacity: 1;
-      }
-
-      100% {
-        transform: scale(1.3);
-        opacity: 0;
-      }
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(1.3); opacity: 0; }
     }
 
     .radar-icon {
@@ -1229,16 +1147,11 @@
     }
 
     @keyframes shimmer {
-      0% {
-        transform: translateX(-100%);
-      }
-
-      100% {
-        transform: translateX(100%);
-      }
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
-    /* Live Checklist */
+    /* Checklist */
     .scan-steps {
       list-style: none;
       text-align: left;
@@ -1291,13 +1204,8 @@
     }
 
     @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     /* Performance Tip Ticker */
@@ -1327,7 +1235,6 @@
       transition: opacity 0.3s ease;
     }
 
-    /* Timer & Action */
     .scan-meta {
       display: flex;
       align-items: center;
@@ -1455,7 +1362,7 @@
     /* Footer */
     footer {
       width: 100%;
-      max-width: 840px;
+      max-width: 860px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1492,7 +1399,7 @@
       color: var(--primary);
     }
 
-    /* Toast Error Alert */
+    /* Toast Notification */
     .toast-error {
       position: fixed;
       bottom: 24px;
@@ -1516,6 +1423,13 @@
       max-width: 420px;
     }
 
+    .toast-error.info {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: #7dd3fc;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(56, 189, 248, 0.25);
+    }
+
     .toast-error.show {
       opacity: 1;
       transform: translateY(0);
@@ -1525,14 +1439,19 @@
     .toast-close {
       background: none;
       border: none;
-      color: #fca5a5;
+      color: inherit;
       cursor: pointer;
       font-size: 16px;
       margin-left: 8px;
       padding: 0 4px;
     }
 
-    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .scope-selector-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 640px) {
       .card {
         padding: 20px 16px;
@@ -1559,12 +1478,12 @@
         align-items: flex-start;
       }
 
-      .display-mode-switch {
+      .display-mode-switch, .device-mode-switch {
         width: 100%;
         justify-content: center;
       }
 
-      .mode-switch-btn {
+      .mode-switch-btn, .device-switch-btn {
         flex: 1;
         justify-content: center;
       }
@@ -1610,7 +1529,6 @@
 
     <!-- Header -->
     <header>
-
       <div class="logo-wrap">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2L9 8H15L12 2Z" fill="#38BDF8" />
@@ -1627,11 +1545,56 @@
       </p>
     </header>
 
-    <!-- Audit Input Form Card -->
+    <!-- Main Audit Card -->
     <div class="card">
       <form id="scanForm" action="/scan" method="GET">
-        <div class="input-group">
-          <div class="input-icon">
+
+        <!-- MAJOR FEATURE: Primary Scope Tabs (Single Page vs Multi-Page Site Crawl) -->
+        <div class="scope-selector-wrap" role="tablist" aria-label="Audit Scope Selection">
+          
+          <!-- Single Page Tab -->
+          <div class="scope-tab active" id="tabSinglePage" role="tab" aria-selected="true" tabindex="0">
+            <div class="scope-tab-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <div class="scope-tab-info">
+              <div class="scope-tab-header">
+                <span class="scope-tab-title">Single Page Audit</span>
+                <span class="scope-tab-badge">Deep Dive</span>
+              </div>
+              <span class="scope-tab-desc">Comprehensive Web Vitals, synthetic interaction trace & CWV analysis.</span>
+            </div>
+          </div>
+
+          <!-- Multi-Page Site Crawl Tab -->
+          <div class="scope-tab" id="tabMultiPage" role="tab" aria-selected="false" tabindex="0">
+            <div class="scope-tab-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+            <div class="scope-tab-info">
+              <div class="scope-tab-header">
+                <span class="scope-tab-title">Multi-Page Site Crawl</span>
+                <span class="scope-tab-badge">Site Engine</span>
+              </div>
+              <span class="scope-tab-desc">Auto-crawls internal sub-pages or multi-URL batches into 1 unified flow report.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- URL Input Group -->
+        <div class="input-group" id="inputGroup">
+          <div class="input-icon" id="inputIcon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -1641,8 +1604,8 @@
             </svg>
           </div>
 
-          <input type="url" id="urlInput" name="url" placeholder="https://github.com" required autocomplete="off"
-            spellcheck="false" value="https://github.com">
+          <input type="text" class="url-input" id="urlInput" name="url" placeholder="https://github.com" required autocomplete="off"
+            spellcheck="false" value="https://github.com" inputmode="url">
 
           <div class="input-actions">
             <button type="button" class="icon-btn" id="pasteBtn" title="Paste from clipboard">
@@ -1660,8 +1623,8 @@
               </svg>
             </button>
             <button type="submit" class="btn-submit" id="submitBtn">
-              <span>Run Audit</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              <span id="submitBtnText">Run Audit</span>
+              <svg id="submitBtnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
               </svg>
@@ -1669,9 +1632,27 @@
           </div>
         </div>
 
+        <!-- Multi-Page Crawl Configuration Bar (Expands when Multi-Page is active) -->
+        <div class="multipage-config-bar" id="multiPageConfigBar">
+          <div class="depth-group">
+            <span class="depth-label">Crawl Pages:</span>
+            <button type="button" class="depth-btn" data-pages="2">2 Pages (Fast)</button>
+            <button type="button" class="depth-btn active" data-pages="3">3 Pages (Default)</button>
+            <button type="button" class="depth-btn" data-pages="5">5 Pages (Deep)</button>
+          </div>
+          <div class="crawl-info-pill">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span id="crawlStatusTip">Auto-discovers internal routes & sub-pages into 1 flow report</span>
+          </div>
+        </div>
+
         <!-- Controls, Presets, and Options -->
         <div class="controls-row">
-          <div class="preset-group">
+          <div class="preset-group" id="presetGroup">
             <span class="preset-label">Presets:</span>
             <button type="button" class="preset-pill" data-url="https://github.com">
               <span>GitHub</span>
@@ -1710,7 +1691,7 @@
               </button>
             </div>
 
-            <!-- Attractive Segmented Display Mode Switch -->
+            <!-- Segmented Display Mode Switch -->
             <div class="display-mode-switch" role="group" aria-label="Report Display Mode">
               <button type="button" class="mode-switch-btn active" id="btnModeEmbedded" data-mode="embedded"
                 title="View report in embedded viewer modal">
@@ -1736,7 +1717,7 @@
           </div>
         </div>
 
-        <!-- Advanced Throttling, JS Sampling & Agentic Controls Drawer -->
+        <!-- Advanced Throttling & Profiling Drawer -->
         <div class="advanced-trigger-wrap">
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
             <button type="button" class="btn-advanced-toggle" id="advancedToggleBtn">
@@ -1750,11 +1731,7 @@
               </svg>
             </button>
             <div id="activeConfigSummary" style="font-size: 11.5px; color: var(--text-subtle); font-family: var(--font-mono);">
-              Mobile 4G &bull; Agentic Active &bull; Standard Trace
-            </div>
-            <div id="activeConfigSummary"
-              style="font-size: 11.5px; color: var(--text-subtle); font-family: var(--font-mono);">
-              Mobile 4G &bull; Agentic Active &bull; Standard Trace
+              Single Page &bull; Mobile 4G &bull; Agentic Active &bull; Standard Trace
             </div>
           </div>
 
@@ -1794,50 +1771,6 @@
                 <div class="adv-toggle-text">
                   <div class="adv-toggle-title">Agentic User Journey Telemetry</div>
                   <div class="adv-toggle-desc">Executes autonomous synthetic scrolling & interaction timespan for realistic UX.</div>
-                </div>
-              </label>
-
-            </div>
-          </div>
-
-          <!-- Expandable Panel -->
-          <div class="advanced-panel" id="advancedPanel">
-            <div class="adv-grid">
-
-              <!-- Throttling Profile -->
-              <div class="adv-field">
-                <label class="adv-label" for="throttlingSelect">Network & CPU Throttling</label>
-                <select class="adv-select" id="throttlingSelect" name="throttling">
-                  <option value="mobile4g" selected>📱 Simulated 4G (Default Mobile - 4x CPU slowdown)</option>
-                  <option value="fast4g">⚡ Fast 4G / Cable (1x CPU - 10 Mbps)</option>
-                  <option value="none">🚀 Direct LAN / Fiber (No Throttling - 0ms latency)</option>
-                  <option value="slow3g">🐢 Slow 3G (Stress Test - 6x CPU slowdown)</option>
-                </select>
-              </div>
-
-              <!-- V8 JS Profiling & Sampling Toggle -->
-              <label class="adv-toggle-row">
-                <div class="custom-switch">
-                  <input type="checkbox" id="jsSamplingCheckbox" name="jsSampling">
-                  <span class="switch-slider"></span>
-                </div>
-                <div class="adv-toggle-text">
-                  <div class="adv-toggle-title">V8 JavaScript Execution Sampling</div>
-                  <div class="adv-toggle-desc">Captures 100µs CPU profiler samples & trace flamechart for V8 scripts.
-                  </div>
-                </div>
-              </label>
-
-              <!-- Agentic Browsing & Multi-Step Interaction Toggle -->
-              <label class="adv-toggle-row">
-                <div class="custom-switch">
-                  <input type="checkbox" id="agenticCheckbox" name="agentic" checked>
-                  <span class="switch-slider"></span>
-                </div>
-                <div class="adv-toggle-text">
-                  <div class="adv-toggle-title">Agentic User Journey Telemetry</div>
-                  <div class="adv-toggle-desc">Executes autonomous synthetic scrolling & interaction timespan for
-                    realistic UX.</div>
                 </div>
               </label>
 
@@ -1942,7 +1875,7 @@
         </div>
       </div>
 
-      <h2 class="scan-title">Running Performance Audit...</h2>
+      <h2 class="scan-title" id="scanModalTitle">Running Performance Audit...</h2>
       <div class="scan-target-url" id="modalTargetUrl">https://github.com</div>
 
       <div class="progress-track">
@@ -1952,23 +1885,23 @@
       <ul class="scan-steps">
         <li class="scan-step active" id="step1">
           <span class="step-icon">&#9679;</span>
-          <span>Spawning headless browser session</span>
+          <span id="step1Text">Spawning headless Chrome browser session</span>
         </li>
         <li class="scan-step" id="step2">
           <span class="step-icon">&#9679;</span>
-          <span>Navigating to URL & applying network profile (<span id="modalProfileLabel">Mobile 4G</span>)</span>
+          <span id="step2Text">Navigating to URL & applying network profile (<span id="modalProfileLabel">Mobile 4G</span>)</span>
         </li>
         <li class="scan-step" id="step3">
           <span class="step-icon">&#9679;</span>
-          <span>Measuring Core Web Vitals & V8 traces (<span id="modalTraceLabel">Standard</span>)</span>
+          <span id="step3Text">Measuring Core Web Vitals & V8 traces (<span id="modalTraceLabel">Standard</span>)</span>
         </li>
         <li class="scan-step" id="step4">
           <span class="step-icon">&#9679;</span>
-          <span id="modalStep4Text">Executing Agentic User Journey & interaction timespan</span>
+          <span id="step4Text">Executing Agentic User Journey & interaction timespan</span>
         </li>
         <li class="scan-step" id="step5">
           <span class="step-icon">&#9679;</span>
-          <span>Synthesizing audit metrics & compiling Lighthouse report</span>
+          <span id="step5Text">Synthesizing audit metrics & compiling Lighthouse report</span>
         </li>
       </ul>
 
@@ -1980,8 +1913,7 @@
           <line x1="12" y1="16" x2="12" y2="12"></line>
           <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
-        <span class="tip-text" id="tipText">Optimizing Largest Contentful Paint (LCP): Preload key hero banners and web
-          fonts.</span>
+        <span class="tip-text" id="tipText">Optimizing Largest Contentful Paint (LCP): Preload key hero banners and web fonts.</span>
       </div>
 
       <div class="scan-meta">
@@ -2045,9 +1977,9 @@
     </div>
   </footer>
 
-  <!-- Toast Error Notification -->
+  <!-- Toast Notification -->
   <div class="toast-error" id="errorToast">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <svg id="toastIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="12" cy="12" r="10"></circle>
       <line x1="12" y1="8" x2="12" y2="12"></line>
       <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -2057,50 +1989,31 @@
   </div>
 
   <script>
+    // Primary Scope State: 'single' | 'multipage'
+    let currentScope = 'single';
+    let selectedMaxPages = 3;
+
+    // Elements
     const form = document.getElementById('scanForm');
     const urlInput = document.getElementById('urlInput');
+    const inputGroup = document.getElementById('inputGroup');
     const pasteBtn = document.getElementById('pasteBtn');
     const clearBtn = document.getElementById('clearBtn');
-    const btnModeEmbedded = document.getElementById('btnModeEmbedded');
-    const btnModeNewTab = document.getElementById('btnModeNewTab');
-    const scanOverlay = document.getElementById('scanOverlay');
-    const modalTargetUrl = document.getElementById('modalTargetUrl');
-    const progressFill = document.getElementById('progressFill');
-    const timerBadge = document.getElementById('timerBadge');
-    const cancelScanBtn = document.getElementById('cancelScanBtn');
-    const tipText = document.getElementById('tipText');
-    const recentWrap = document.getElementById('recentWrap');
-    const recentChips = document.getElementById('recentChips');
-    const clearRecentBtn = document.getElementById('clearRecentBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnText = document.getElementById('submitBtnText');
+    const tabSinglePage = document.getElementById('tabSinglePage');
+    const tabMultiPage = document.getElementById('tabMultiPage');
+    const multiPageConfigBar = document.getElementById('multiPageConfigBar');
+    const crawlStatusTip = document.getElementById('crawlStatusTip');
+    const depthBtns = document.querySelectorAll('.depth-btn');
 
-    // Toast Notification Elements
-    const errorToast = document.getElementById('errorToast');
-    const toastMessage = document.getElementById('toastMessage');
-    const toastCloseBtn = document.getElementById('toastCloseBtn');
-    let toastTimeout = null;
-
-    function showErrorToast(msg) {
-      toastMessage.textContent = msg;
-      errorToast.classList.add('show');
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        errorToast.classList.remove('show');
-      }, 6000);
-    }
-
-    toastCloseBtn.addEventListener('click', () => {
-      errorToast.classList.remove('show');
-    });
-
-    // Device Selection State ('mobile' | 'desktop')
-    let selectedDevice = 'mobile';
+    // Switches
     const btnDeviceMobile = document.getElementById('btnDeviceMobile');
     const btnDeviceDesktop = document.getElementById('btnDeviceDesktop');
+    const btnModeEmbedded = document.getElementById('btnModeEmbedded');
+    const btnModeNewTab = document.getElementById('btnModeNewTab');
 
-    // Display Mode Switch State ('embedded' | 'newtab')
-    let displayMode = 'embedded';
-
-    // Advanced Panel Elements
+    // Advanced Drawer
     const advancedToggleBtn = document.getElementById('advancedToggleBtn');
     const advancedPanel = document.getElementById('advancedPanel');
     const throttlingSelect = document.getElementById('throttlingSelect');
@@ -2108,7 +2021,118 @@
     const agenticCheckbox = document.getElementById('agenticCheckbox');
     const activeConfigSummary = document.getElementById('activeConfigSummary');
 
+    // Overlay & Modal
+    const scanOverlay = document.getElementById('scanOverlay');
+    const scanModalTitle = document.getElementById('scanModalTitle');
+    const modalTargetUrl = document.getElementById('modalTargetUrl');
+    const progressFill = document.getElementById('progressFill');
+    const timerBadge = document.getElementById('timerBadge');
+    const cancelScanBtn = document.getElementById('cancelScanBtn');
+    const tipText = document.getElementById('tipText');
+
+    // Report Viewer Elements
+    const viewerModal = document.getElementById('viewerModal');
+    const viewerTargetDisplay = document.getElementById('viewerTargetDisplay');
+    const reportFrame = document.getElementById('reportFrame');
+    const downloadReportBtn = document.getElementById('downloadReportBtn');
+    const openExternalTabBtn = document.getElementById('openExternalTabBtn');
+    const closeViewerBtn = document.getElementById('closeViewerBtn');
+
+    // History & Toasts
+    const recentWrap = document.getElementById('recentWrap');
+    const recentChips = document.getElementById('recentChips');
+    const clearRecentBtn = document.getElementById('clearRecentBtn');
+    const errorToast = document.getElementById('errorToast');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastCloseBtn = document.getElementById('toastCloseBtn');
+    let toastTimeout = null;
+
+    let selectedDevice = 'mobile';
+    let displayMode = 'embedded';
+
+    // Toast Notifications
+    function showToast(msg, isInfo = false) {
+      toastMessage.textContent = msg;
+      if (isInfo) {
+        errorToast.classList.add('info');
+      } else {
+        errorToast.classList.remove('info');
+      }
+      errorToast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        errorToast.classList.remove('show');
+      }, 5500);
+    }
+
+    toastCloseBtn.addEventListener('click', () => {
+      errorToast.classList.remove('show');
+    });
+
+    // Scope Switching Logic
+    function setAuditScope(scope, triggeredByAutoDetect = false) {
+      currentScope = scope;
+      if (scope === 'multipage') {
+        tabMultiPage.classList.add('active');
+        tabMultiPage.setAttribute('aria-selected', 'true');
+        tabSinglePage.classList.remove('active');
+        tabSinglePage.setAttribute('aria-selected', 'false');
+
+        inputGroup.classList.add('multipage-mode-active');
+        multiPageConfigBar.classList.add('open');
+
+        urlInput.placeholder = 'https://example.com (or paste multiple URLs separated by commas / lines)';
+        submitBtnText.textContent = 'Crawl & Audit Site';
+
+        if (triggeredByAutoDetect) {
+          showToast('⚡ Multi-URL detected • Switched to Multi-Page Crawl mode', true);
+        }
+      } else {
+        tabSinglePage.classList.add('active');
+        tabSinglePage.setAttribute('aria-selected', 'true');
+        tabMultiPage.classList.remove('active');
+        tabMultiPage.setAttribute('aria-selected', 'false');
+
+        inputGroup.classList.remove('multipage-mode-active');
+        multiPageConfigBar.classList.remove('open');
+
+        urlInput.placeholder = 'https://github.com';
+        submitBtnText.textContent = 'Run Audit';
+      }
+      updateConfigSummary();
+    }
+
+    tabSinglePage.addEventListener('click', () => setAuditScope('single'));
+    tabMultiPage.addEventListener('click', () => setAuditScope('multipage'));
+
+    // Depth Buttons
+    depthBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        depthBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedMaxPages = parseInt(btn.getAttribute('data-pages') || '3', 10);
+        crawlStatusTip.textContent = `Auto-crawls top ${selectedMaxPages} internal routes & sub-pages into 1 flow report`;
+        updateConfigSummary();
+      });
+    });
+
+    // Detect Multi-URL in text
+    function hasMultipleUrls(val) {
+      if (!val) return false;
+      const parts = val.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean);
+      return parts.length > 1;
+    }
+
+    // Input Auto-Detection
+    urlInput.addEventListener('input', () => {
+      if (hasMultipleUrls(urlInput.value) && currentScope !== 'multipage') {
+        setAuditScope('multipage', true);
+      }
+    });
+
+    // Configuration Summary
     function updateConfigSummary() {
+      const scopeLabel = currentScope === 'multipage' ? `Multi-Page (${selectedMaxPages} pgs)` : 'Single Page';
       const devName = selectedDevice === 'desktop' ? 'Desktop' : 'Mobile';
       const throttMap = {
         mobile4g: '4G Throttling',
@@ -2116,12 +2140,13 @@
         none: 'No Throttling',
         slow3g: 'Slow 3G'
       };
-      const thName = throttMap[throttlingSelect.value] || 'Custom Throttling';
-      const agenticText = agenticCheckbox.checked ? 'Agentic Active' : 'Basic Page Load';
+      const thName = throttMap[throttlingSelect.value] || 'Throttled';
+      const agenticText = agenticCheckbox.checked ? 'Agentic ON' : 'Basic Load';
       const jsText = jsSamplingCheckbox.checked ? 'V8 JS Sampling ON' : 'Standard Trace';
-      activeConfigSummary.textContent = `${devName} • ${thName} • ${agenticText} • ${jsText}`;
+      activeConfigSummary.textContent = `${scopeLabel} • ${devName} • ${thName} • ${agenticText} • ${jsText}`;
     }
 
+    // Device Switch
     btnDeviceMobile.addEventListener('click', () => {
       selectedDevice = 'mobile';
       btnDeviceMobile.classList.add('active');
@@ -2139,6 +2164,7 @@
       updateConfigSummary();
     });
 
+    // Display Mode Switch
     btnModeEmbedded.addEventListener('click', () => {
       displayMode = 'embedded';
       btnModeEmbedded.classList.add('active');
@@ -2151,6 +2177,7 @@
       btnModeEmbedded.classList.remove('active');
     });
 
+    // Advanced Drawer Toggle
     advancedToggleBtn.addEventListener('click', () => {
       advancedToggleBtn.classList.toggle('open');
       advancedPanel.classList.toggle('open');
@@ -2160,34 +2187,54 @@
     jsSamplingCheckbox.addEventListener('change', updateConfigSummary);
     agenticCheckbox.addEventListener('change', updateConfigSummary);
 
-    // Report Viewer Elements
-    const viewerModal = document.getElementById('viewerModal');
-    const viewerTargetDisplay = document.getElementById('viewerTargetDisplay');
-    const reportFrame = document.getElementById('reportFrame');
-    const downloadReportBtn = document.getElementById('downloadReportBtn');
-    const openExternalTabBtn = document.getElementById('openExternalTabBtn');
-    const closeViewerBtn = document.getElementById('closeViewerBtn');
+    // URL Sanitization
+    function formatUrls(raw) {
+      return raw.split(/[\r\n,;]+/)
+        .map(u => {
+          let trimmed = u.trim();
+          if (!trimmed) return '';
+          if (!/^https?:\/\//i.test(trimmed)) {
+            trimmed = 'https://' + trimmed;
+          }
+          return trimmed;
+        })
+        .filter(Boolean)
+        .join(', ');
+    }
 
-    let currentReportHtml = '';
-    let currentReportUrl = '';
+    // Presets
+    document.querySelectorAll('.preset-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const url = btn.getAttribute('data-url');
+        if (url) {
+          urlInput.value = url;
+          urlInput.focus();
+        }
+      });
+    });
 
-    const tips = [
-      "Optimizing Largest Contentful Paint (LCP): Preload critical hero images and Google Fonts.",
-      "Preventing Cumulative Layout Shift (CLS): Explicitly define width and height attributes on images and iframes.",
-      "Refining Interaction to Next Paint (INP): Break up JavaScript long-tasks using scheduler.yield() or requestIdleCallback.",
-      "Modern Image Compression: Use next-gen formats like WebP or AVIF to slash asset weight by up to 50%.",
-      "CSS & JavaScript Delivery: Eliminate render-blocking stylesheets and defer non-critical scripts.",
-      "Accessibility Benchmark: Ensure minimum 4.5:1 text color contrast ratios for WCAG AA compliance."
-    ];
-    let tipIndex = 0;
-    let tipInterval = null;
+    clearBtn.addEventListener('click', () => {
+      urlInput.value = '';
+      urlInput.focus();
+    });
 
-    let timerInterval = null;
-    let progressInterval = null;
-    let stepTimeouts = [];
+    pasteBtn.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          urlInput.value = text.trim();
+          if (hasMultipleUrls(text) && currentScope !== 'multipage') {
+            setAuditScope('multipage', true);
+          }
+          urlInput.focus();
+        }
+      } catch (err) {
+        urlInput.focus();
+      }
+    });
 
-    // Local Storage for Recent Scans
-    const STORAGE_KEY = 'lighthouse_recent_scans';
+    // Recent Scans Storage
+    const STORAGE_KEY = 'lighthouse_recent_scans_v2';
 
     function loadRecentScans() {
       try {
@@ -2195,13 +2242,16 @@
         if (items.length > 0) {
           recentWrap.style.display = 'block';
           recentChips.innerHTML = '';
-          items.slice(0, 5).forEach(url => {
+          items.slice(0, 6).forEach(url => {
             const chip = document.createElement('div');
             chip.className = 'recent-chip';
             chip.textContent = url;
             chip.title = url;
             chip.addEventListener('click', () => {
               urlInput.value = url;
+              if (hasMultipleUrls(url)) {
+                setAuditScope('multipage');
+              }
               urlInput.focus();
             });
             recentChips.appendChild(chip);
@@ -2229,66 +2279,58 @@
       loadRecentScans();
     });
 
-    // Presets
-    document.querySelectorAll('.preset-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const url = btn.getAttribute('data-url');
-        if (url) {
-          urlInput.value = url;
-          urlInput.focus();
-        }
-      });
-    });
+    // Rotating Performance Tips
+    const tips = [
+      "Optimizing Largest Contentful Paint (LCP): Preload critical hero images and Google Fonts.",
+      "Preventing Cumulative Layout Shift (CLS): Explicitly define width and height attributes on images and iframes.",
+      "Refining Interaction to Next Paint (INP): Break up JavaScript long-tasks using scheduler.yield() or requestIdleCallback.",
+      "Modern Image Compression: Use next-gen formats like WebP or AVIF to slash asset weight by up to 50%.",
+      "Multi-Page Audit Benefit: Flow reports compare performance regressions across your entire website routes.",
+      "Accessibility Benchmark: Ensure minimum 4.5:1 text color contrast ratios for WCAG AA compliance."
+    ];
+    let tipIndex = 0;
+    let tipInterval = null;
+    let timerInterval = null;
+    let progressInterval = null;
+    let stepTimeouts = [];
 
-    // Clear Button
-    clearBtn.addEventListener('click', () => {
-      urlInput.value = '';
-      urlInput.focus();
-    });
-
-    // Paste from Clipboard
-    pasteBtn.addEventListener('click', async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text) {
-          urlInput.value = text.trim();
-          urlInput.focus();
-        }
-      } catch (err) {
-        urlInput.focus();
-      }
-    });
-
-    // URL Sanitization
-    function formatUrl(raw) {
-      let trimmed = raw.trim();
-      if (!/^https?:\/\//i.test(trimmed)) {
-        trimmed = 'https://' + trimmed;
-      }
-      return trimmed;
-    }
-
-    // Scanning State Orchestration
-    function startScanningUI(targetUrl) {
+    // Overlay Animations
+    function startScanningUI(targetUrl, isMulti) {
       modalTargetUrl.textContent = targetUrl;
+      scanModalTitle.textContent = isMulti ? 'Running Multi-Page Site Crawl...' : 'Running Performance Audit...';
 
-      // Update dynamic modal badges
       const devTitle = selectedDevice === 'desktop' ? 'Desktop' : 'Mobile';
       const throttTitle = throttlingSelect.options[throttlingSelect.selectedIndex].text.split('(')[0].replace(/[📱⚡🚀🐢]/g, '').trim();
       document.getElementById('modalProfileLabel').textContent = `${devTitle} • ${throttTitle}`;
-      document.getElementById('modalTraceLabel').textContent = jsSamplingCheckbox.checked ? 'V8 CPU Profiler (100µs)' : 'Standard Trace';
+      document.getElementById('modalTraceLabel').textContent = jsSamplingCheckbox.checked ? 'V8 Profiler (100µs)' : 'Standard Trace';
 
+      // Update step descriptions dynamically based on Multi-Page vs Single Page
+      const step1Text = document.getElementById('step1Text');
+      const step2Text = document.getElementById('step2Text');
+      const step3Text = document.getElementById('step3Text');
+      const step4Text = document.getElementById('step4Text');
+      const step5Text = document.getElementById('step5Text');
       const step4 = document.getElementById('step4');
-      const isAgentic = agenticCheckbox.checked;
-      if (!isAgentic) {
-        step4.style.display = 'none';
-      } else {
+
+      if (isMulti) {
+        step1Text.textContent = 'Spawning headless Chrome browser instance';
+        step2Text.innerHTML = `Navigating to initial page & mapping internal routes (<span id="modalProfileLabel">${devTitle} • ${throttTitle}</span>)`;
+        step3Text.textContent = `Crawling & auditing discovered sub-pages (up to ${selectedMaxPages} routes)`;
+        step4Text.textContent = 'Measuring Core Web Vitals & synthetic interaction across pages';
+        step5Text.textContent = 'Synthesizing Multi-Page Flow report with page comparison matrix';
         step4.style.display = 'flex';
+      } else {
+        step1Text.textContent = 'Spawning headless Chrome browser session';
+        step2Text.innerHTML = `Navigating to URL & applying network profile (<span id="modalProfileLabel">${devTitle} • ${throttTitle}</span>)`;
+        step3Text.innerHTML = `Measuring Core Web Vitals & V8 traces (<span id="modalTraceLabel">${jsSamplingCheckbox.checked ? 'V8 Profiler' : 'Standard'}</span>)`;
+        step4Text.textContent = 'Executing Agentic User Journey & interaction timespan';
+        step5Text.textContent = 'Synthesizing audit metrics & compiling Lighthouse report';
+        step4.style.display = agenticCheckbox.checked ? 'flex' : 'none';
       }
 
       scanOverlay.classList.add('active');
 
-      // Reset steps 1 to 5
+      // Reset steps
       for (let i = 1; i <= 5; i++) {
         const step = document.getElementById(`step${i}`);
         if (step) {
@@ -2300,8 +2342,8 @@
 
       let progress = 5;
       progressFill.style.width = '5%';
-
       let elapsedSeconds = 0;
+
       clearInterval(timerInterval);
       clearInterval(progressInterval);
       clearInterval(tipInterval);
@@ -2318,7 +2360,7 @@
 
       progressInterval = setInterval(() => {
         if (progress < 92) {
-          progress += (92 - progress) * 0.08;
+          progress += (92 - progress) * (isMulti ? 0.05 : 0.08);
           progressFill.style.width = `${Math.min(95, Math.round(progress))}%`;
         }
       }, 500);
@@ -2335,33 +2377,27 @@
         }, 300);
       }, 4500);
 
-      // Step Progressions
+      // Step Timing
+      const mult = isMulti ? 1.6 : 1.0;
       stepTimeouts.push(setTimeout(() => {
         markStepDone('step1');
         markStepActive('step2');
-      }, 2500));
+      }, 2500 * mult));
 
       stepTimeouts.push(setTimeout(() => {
         markStepDone('step2');
         markStepActive('step3');
-      }, 6500));
+      }, 7000 * mult));
 
-      if (isAgentic) {
-        stepTimeouts.push(setTimeout(() => {
-          markStepDone('step3');
-          markStepActive('step4');
-        }, 11000));
+      stepTimeouts.push(setTimeout(() => {
+        markStepDone('step3');
+        markStepActive('step4');
+      }, 12500 * mult));
 
-        stepTimeouts.push(setTimeout(() => {
-          markStepDone('step4');
-          markStepActive('step5');
-        }, 15500));
-      } else {
-        stepTimeouts.push(setTimeout(() => {
-          markStepDone('step3');
-          markStepActive('step5');
-        }, 11000));
-      }
+      stepTimeouts.push(setTimeout(() => {
+        markStepDone('step4');
+        markStepActive('step5');
+      }, 18000 * mult));
     }
 
     function markStepDone(id) {
@@ -2391,48 +2427,68 @@
 
     cancelScanBtn.addEventListener('click', stopScanningUI);
 
-    // Form Submission & Inline Report Fetch
+    // Form Submission (Supports Single Page or Multi-Page Site Crawl)
     form.addEventListener('submit', async (e) => {
-      let finalUrl = formatUrl(urlInput.value);
+      let finalUrl = formatUrls(urlInput.value);
+      if (!finalUrl) {
+        e.preventDefault();
+        showToast('Please enter a valid website URL to audit.');
+        return;
+      }
+
       urlInput.value = finalUrl;
       saveRecentScan(finalUrl);
+
+      const isMulti = currentScope === 'multipage' || hasMultipleUrls(finalUrl);
 
       const params = new URLSearchParams({
         url: finalUrl,
         device: selectedDevice,
         throttling: throttlingSelect.value,
+        multiPage: isMulti ? 'true' : 'false',
+        maxPages: isMulti ? selectedMaxPages : '1',
         jsSampling: jsSamplingCheckbox.checked ? 'true' : 'false',
         agentic: agenticCheckbox.checked ? 'true' : 'false'
       });
       const scanUrl = `/scan?${params.toString()}`;
 
-      if (displayMode === 'embedded') {
-        e.preventDefault();
-        startScanningUI(finalUrl);
+      e.preventDefault();
+      startScanningUI(finalUrl, isMulti);
 
-        try {
-          const res = await fetch(scanUrl);
-          if (!res.ok) {
-            const errText = await res.text();
-            throw new Error(errText || 'Scan request failed.');
-          }
-          const html = await res.text();
-          stopScanningUI();
-          showReportViewer(html, finalUrl);
-        } catch (err) {
-          stopScanningUI();
-          showErrorToast(err.message || 'Audit scan failed. Please check the server logs.');
+      try {
+        const res = await fetch(scanUrl);
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(errText || `Server responded with status ${res.status}`);
         }
-      } else {
-        e.preventDefault();
-        startScanningUI(finalUrl);
-        window.open(scanUrl, '_blank');
+        const html = await res.text();
+        markStepDone('step5');
+        progressFill.style.width = '100%';
+
+        // Brief pause so user sees all steps completed
+        setTimeout(() => {
+          stopScanningUI();
+          if (displayMode === 'embedded') {
+            showReportViewer(html, finalUrl);
+          } else {
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
+            showToast('Audit complete • Report opened in new tab!', true);
+          }
+        }, 400);
+      } catch (err) {
+        console.error('Audit scan error:', err);
+        stopScanningUI();
+        showToast(err.message || 'Audit scan failed. Please check the server logs.');
       }
     });
 
+    // Embedded Report Viewer Controls
+    let currentReportHtml = '';
+    let currentReportUrl = '';
     let reportBlobUrl = null;
 
-    // Report Viewer Controls
     function showReportViewer(html, targetUrl) {
       currentReportHtml = html;
       currentReportUrl = targetUrl;
@@ -2463,7 +2519,7 @@
       if (!currentReportHtml) return;
       const blob = new Blob([currentReportHtml], { type: 'text/html;charset=utf-8' });
       const a = document.createElement('a');
-      const filename = `lighthouse-report-${new URL(currentReportUrl).hostname}-${Date.now()}.html`;
+      const filename = `lighthouse-report-${Date.now()}.html`;
       a.href = URL.createObjectURL(blob);
       a.download = filename;
       a.click();
@@ -2486,13 +2542,12 @@
           stopScanningUI();
         }
       }
-
     });
-    // Initialize
+
+    // Initialization
     loadRecentScans();
     updateConfigSummary();
   </script>
 </body>
 
 </html>
-<!--  -->
