@@ -6,7 +6,11 @@ An automated web performance and SEO audit suite powered by **Puppeteer** and **
 
 ## Features
 
-- ⚡ **Interactive Web Dashboard**: Beautiful dark-mode interface with live scanning radar, progress checklist, real-time timer, and rotating Web Vitals tips.
+- ⚡ **Interactive Web Dashboard**: Beautiful dark-mode interface with live scanning radar, 5-step progress checklist, real-time timer, and rotating Web Vitals tips.
+- 📱 **Mobile & Desktop Emulation**: One-click device toggle with tailored viewport resolutions, user agents, and device scale factors.
+- 🤖 **Agentic Browsing Telemetry**: Multi-step Lighthouse user flow executing autonomous synthetic scrolling and interaction timespans.
+- ⏱️ **Advanced Throttling Profiles**: Customizable network & CPU throttling (Simulated 4G, Fast 4G / Cable, Direct LAN / No Throttling, Slow 3G).
+- 🔬 **V8 JS Execution Sampling**: High-resolution 100µs V8 CPU profiler sampling for deep execution flamecharts.
 - 📊 **Embedded Report Viewer**: Inspect reports inline with fullscreen toggle, new tab export, and one-click HTML download.
 - 🎯 **Presets & History**: Quick-target presets and local storage scan history.
 - 🛠️ **Server & CLI Modes**: Run as a local Express web server or as an automated CLI script.
