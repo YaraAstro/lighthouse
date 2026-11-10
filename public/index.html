@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lighthouse Web Scanner</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 40px; max-width: 600px; margin: auto; text-align: center; }
+    input { padding: 10px; width: 70%; font-size: 16px; margin-bottom: 20px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #005fcc; color: white; border: none; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Web Performance Scanner</h1>
+  <p>Enter a URL to generate a complete Lighthouse report.</p>
+  
+  <!-- The form sends a GET request to our /scan endpoint -->
+  <form action="/scan" method="GET">
+    <input type="url" name="url" placeholder="https://elandrofurntiture.netlify.app/" required>
+    <br>
+    <button type="submit">Run Scan (Takes ~15 seconds)</button>
+  </form>
+</body>
+</html>
