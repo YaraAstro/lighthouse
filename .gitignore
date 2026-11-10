@@ -1,0 +1,16 @@
+node_modules/
+
+# Generated Lighthouse report
+elandro-report.html
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# npm logs
+npm-debug.log*
+
+# Operating system files
+.DS_Store
+Thumbs.db
