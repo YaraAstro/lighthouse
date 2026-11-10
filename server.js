@@ -18,18 +18,26 @@ app.get('/scan', async (req, res) => {
 
   console.log(`Starting scan for: ${targetUrl}`);
 
+  let browser;
   try {
-    const browser = await puppeteer.launch({ headless: 'new' });
+    browser = await puppeteer.launch({ 
+      headless: true,
+      pipe: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
+      ]
+    });
     const page = await browser.newPage();
     
     const flow = await startFlow(page, { name: `Scan for ${targetUrl}` });
 
     await flow.navigate(targetUrl, { stepName: 'Page Load' });
-    
-    await browser.close();
 
     // Generate the report as an HTML string
-    const htmlReport = await flow.createReport();
+    const htmlReport = await flow.generateReport();
     
     // Send the raw HTML directly to the browser
     res.setHeader('Content-Type', 'text/html');
@@ -38,7 +46,11 @@ app.get('/scan', async (req, res) => {
     console.log(`Scan complete for: ${targetUrl}`);
   } catch (error) {
     console.error(error);
-    res.status(500).send('An error occurred while scanning the website.');
+    res.status(500).send(`An error occurred while scanning the website: ${error.message || error}`);
+  } finally {
+    if (browser) {
+      await browser.close().catch(() => {});
+    }
   }
 });
 

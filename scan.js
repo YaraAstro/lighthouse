@@ -3,30 +3,42 @@ import puppeteer from 'puppeteer';
 import { startFlow } from 'lighthouse';
 
 async function runScan() {
-  console.log('Launching browser...');
-  const browser = await puppeteer.launch({ headless: 'new' });
-  const page = await browser.newPage();
+  const targetUrl = process.argv[2] || 'https://github.com';
+  console.log(`Starting scan for: ${targetUrl}`);
 
-  const flow = await startFlow(page, { name: 'Elandro Furniture Multi-Page Scan' });
+  let browser;
+  try {
+    console.log('Launching headless browser...');
+    browser = await puppeteer.launch({ 
+      headless: true,
+      pipe: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
+      ]
+    });
+    const page = await browser.newPage();
 
-  console.log('Scanning Homepage...');
-  await flow.navigate('https://elandrofurntiture.netlify.app/', {
-    stepName: 'Homepage'
-  });
+    const flow = await startFlow(page, { name: `Scan for ${targetUrl}` });
 
-  // Add any other specific pages you want to test here
-  console.log('Scanning Shop/About Page...');
-  await flow.navigate('https://elandrofurntiture.netlify.app/about', {
-    stepName: 'About Page'
-  });
+    console.log(`Navigating to ${targetUrl}...`);
+    await flow.navigate(targetUrl, { stepName: 'Page Load' });
 
-  await browser.close();
+    console.log('Generating Lighthouse report...');
+    const htmlReport = await flow.generateReport();
+    const outputFile = 'report.html';
+    fs.writeFileSync(outputFile, htmlReport);
 
-  console.log('Generating report...');
-  const htmlReport = await flow.createReport();
-  fs.writeFileSync('elandro-report.html', htmlReport);
-
-  console.log('Done! Open elandro-report.html to see your results.');
+    console.log(`Done! Open ${outputFile} to view the results.`);
+  } catch (error) {
+    console.error('Scan failed:', error);
+  } finally {
+    if (browser) {
+      await browser.close().catch(() => {});
+    }
+  }
 }
 
 runScan();

@@ -1,20 +1,43 @@
-# Lighthouse site scan
+# Lighthouse Web Performance Scanner
 
-A small Node.js script that runs a Lighthouse user flow against the Elandro Furniture website and saves an HTML report.
+An automated web performance and SEO audit suite powered by **Puppeteer** and **Google Lighthouse**, featuring an interactive web dashboard and CLI multi-page runner.
 
-## Requirements
+[![GitHub Repo](https://img.shields.io/badge/GitHub-YaraAstro%2Flighthouse-38bdf8?style=flat&logo=github)](https://github.com/YaraAstro/lighthouse)
 
-- Node.js with npm
-- The project dependencies installed
+## Features
 
-## Run
+- ⚡ **Interactive Web Dashboard**: Beautiful dark-mode interface with live scanning radar, progress checklist, real-time timer, and rotating Web Vitals tips.
+- 📊 **Embedded Report Viewer**: Inspect reports inline with fullscreen toggle, new tab export, and one-click HTML download.
+- 🎯 **Presets & History**: Quick-target presets and local storage scan history.
+- 🛠️ **Server & CLI Modes**: Run as a local Express web server or as an automated CLI script.
+
+## Getting Started
+
+### 1. Install Dependencies
 
 ```sh
 npm install
-node scan.js
 ```
 
-The script launches Puppeteer, scans the homepage and `/about` page at `https://elandrofurntiture.netlify.app/`, and writes `elandro-report.html` in the project directory. Open that file in a browser to view the report.
+### 2. Start the Web Scanner UI
+
+```sh
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 3. Run the CLI Script (Multi-Page Scan)
+
+```sh
+npm run scan
+```
+
+The script launches Puppeteer, scans the target pages, and writes `elandro-report.html` to the project directory.
+
+## Repository
+
+- GitHub: [https://github.com/YaraAstro/lighthouse](https://github.com/YaraAstro/lighthouse)
 
 ## License
 
