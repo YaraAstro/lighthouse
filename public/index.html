@@ -132,8 +132,17 @@
     }
 
     @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+      }
     }
 
     .github-pill {
@@ -485,6 +494,188 @@
       transform: translateY(0);
     }
 
+    /* Multi-URL Builder List & Dynamic Rows */
+    .multi-url-container {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .multi-url-container.open {
+      display: flex;
+    }
+
+    .extra-urls-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .url-row {
+      display: flex;
+      align-items: center;
+      background: rgba(10, 14, 23, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 6px 8px 6px 14px;
+      gap: 10px;
+      transition: all 0.2s ease;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .url-row:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+
+    .url-row-index {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 2px 7px;
+      border-radius: 6px;
+      min-width: 22px;
+      text-align: center;
+      user-select: none;
+    }
+
+    .url-row-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      font-weight: 500;
+      padding: 6px 0;
+    }
+
+    .url-row-input::placeholder {
+      color: var(--text-subtle);
+      font-size: 13.5px;
+    }
+
+    .btn-remove-row {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-remove-row:hover {
+      background: rgba(239, 68, 68, 0.22);
+      color: #ffffff;
+      border-color: #ef4444;
+    }
+
+    /* URL Builder Actions Toolbar */
+    .url-builder-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 2px 2px;
+    }
+
+    .url-builder-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-builder-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px dashed rgba(255, 255, 255, 0.16);
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 13px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-builder-action:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #38bdf8;
+    }
+
+    .url-counter-badge {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--primary);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 4px 11px;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    /* Bulk Paste Dropdown Drawer */
+    .bulk-paste-box {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      animation: fadeIn 0.2s ease-out;
+      margin-top: 4px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .bulk-paste-box.open {
+      display: flex;
+    }
+
+    .bulk-paste-textarea {
+      background: rgba(10, 14, 23, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      resize: vertical;
+      min-height: 86px;
+      line-height: 1.5;
+    }
+
+    .bulk-paste-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+
+    .bulk-paste-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     /* Multi-Page Config Pill Bar (Visible when Multi-Page is active) */
     .multipage-config-bar {
       display: none;
@@ -739,8 +930,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .adv-grid {
@@ -853,12 +1051,12 @@
       border-radius: 50%;
     }
 
-    .custom-switch input:checked + .switch-slider {
+    .custom-switch input:checked+.switch-slider {
       background: linear-gradient(135deg, #38bdf8, #0284c7);
       box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
     }
 
-    .custom-switch input:checked + .switch-slider:before {
+    .custom-switch input:checked+.switch-slider:before {
       transform: translateX(16px);
     }
 
@@ -1068,13 +1266,25 @@
     }
 
     @keyframes rotateRadar {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     @keyframes ripple {
-      0% { transform: scale(0.6); opacity: 1; }
-      100% { transform: scale(1.3); opacity: 0; }
+      0% {
+        transform: scale(0.6);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.3);
+        opacity: 0;
+      }
     }
 
     .radar-icon {
@@ -1147,8 +1357,13 @@
     }
 
     @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
     }
 
     /* Checklist */
@@ -1204,8 +1419,13 @@
     }
 
     @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     /* Performance Tip Ticker */
@@ -1478,12 +1698,14 @@
         align-items: flex-start;
       }
 
-      .display-mode-switch, .device-mode-switch {
+      .display-mode-switch,
+      .device-mode-switch {
         width: 100%;
         justify-content: center;
       }
 
-      .mode-switch-btn, .device-switch-btn {
+      .mode-switch-btn,
+      .device-switch-btn {
         flex: 1;
         justify-content: center;
       }
@@ -1541,7 +1763,8 @@
 
       <h1>Web Performance Scanner</h1>
       <p class="subtitle">
-        Evaluate your site's speed, Core Web Vitals, accessibility, best practices, SEO, and agentic user journey telemetry.
+        Evaluate your site's speed, Core Web Vitals, accessibility, best practices, SEO, and agentic user journey
+        telemetry.
       </p>
     </header>
 
@@ -1551,11 +1774,12 @@
 
         <!-- MAJOR FEATURE: Primary Scope Tabs (Single Page vs Multi-Page Site Crawl) -->
         <div class="scope-selector-wrap" role="tablist" aria-label="Audit Scope Selection">
-          
+
           <!-- Single Page Tab -->
           <div class="scope-tab active" id="tabSinglePage" role="tab" aria-selected="true" tabindex="0">
             <div class="scope-tab-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -1575,10 +1799,12 @@
           <!-- Multi-Page Site Crawl Tab -->
           <div class="scope-tab" id="tabMultiPage" role="tab" aria-selected="false" tabindex="0">
             <div class="scope-tab-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                </path>
               </svg>
             </div>
             <div class="scope-tab-info">
@@ -1586,7 +1812,8 @@
                 <span class="scope-tab-title">Multi-Page Site Crawl</span>
                 <span class="scope-tab-badge">Site Engine</span>
               </div>
-              <span class="scope-tab-desc">Auto-crawls internal sub-pages or multi-URL batches into 1 unified flow report.</span>
+              <span class="scope-tab-desc">Auto-crawls internal sub-pages or multi-URL batches into 1 unified flow
+                report.</span>
             </div>
           </div>
 
@@ -1604,8 +1831,8 @@
             </svg>
           </div>
 
-          <input type="text" class="url-input" id="urlInput" name="url" placeholder="https://github.com" required autocomplete="off"
-            spellcheck="false" value="https://github.com" inputmode="url">
+          <input type="text" class="url-input" id="urlInput" name="url" placeholder="https://github.com" required
+            autocomplete="off" spellcheck="false" value="https://github.com" inputmode="url">
 
           <div class="input-actions">
             <button type="button" class="icon-btn" id="pasteBtn" title="Paste from clipboard">
@@ -1624,12 +1851,61 @@
             </button>
             <button type="submit" class="btn-submit" id="submitBtn">
               <span id="submitBtnText">Run Audit</span>
-              <svg id="submitBtnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
+              <svg id="submitBtnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
               </svg>
             </button>
           </div>
+        </div>
+
+        <!-- Dynamic Multi-URL Builder (Active when Multi-Page is selected) -->
+        <div class="multi-url-container" id="multiUrlContainer">
+
+          <!-- Extra URLs List (Rows 2, 3, 4...) -->
+          <div class="extra-urls-list" id="extraUrlsList"></div>
+
+          <!-- URL Builder Actions Toolbar -->
+          <div class="url-builder-actions">
+            <div class="url-builder-btns">
+              <button type="button" class="btn-builder-action" id="btnAddUrl">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Add Another URL</span>
+              </button>
+
+              <button type="button" class="btn-builder-action" id="btnToggleBulk">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                <span>Bulk Paste / Import</span>
+              </button>
+
+              <button type="button" class="btn-builder-action" id="btnClearExtra" style="display: none;">
+                <span>Clear Extra URLs</span>
+              </button>
+            </div>
+
+            <div class="url-counter-badge" id="urlCounterBadge">1 URL Queued</div>
+          </div>
+
+          <!-- Bulk Paste Drawer -->
+          <div class="bulk-paste-box" id="bulkPasteBox">
+            <div style="font-size: 11.5px; color: var(--text-muted); font-weight: 600;">
+              Paste multiple URLs below (separated by lines, commas, or spaces):
+            </div>
+            <textarea class="bulk-paste-textarea" id="bulkPasteInput"
+              placeholder="https://example.com/shop&#10;https://example.com/pricing&#10;https://example.com/docs"></textarea>
+            <div class="bulk-paste-actions">
+              <button type="button" class="preset-pill" id="btnCancelBulk">Cancel</button>
+              <button type="button" class="btn-submit" id="btnImportBulk"
+                style="padding: 6px 16px; font-size: 12.5px;">Import URLs 📥</button>
+            </div>
+          </div>
+
         </div>
 
         <!-- Multi-Page Crawl Configuration Bar (Expands when Multi-Page is active) -->
@@ -1674,15 +1950,19 @@
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Device Mode Switch -->
             <div class="device-mode-switch" role="group" aria-label="Device Form Factor">
-              <button type="button" class="device-switch-btn active" id="btnDeviceMobile" data-device="mobile" title="Audit Mobile Form Factor (Moto G4 / Pixel)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <button type="button" class="device-switch-btn active" id="btnDeviceMobile" data-device="mobile"
+                title="Audit Mobile Form Factor (Moto G4 / Pixel)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
                   <line x1="12" y1="18" x2="12.01" y2="18"></line>
                 </svg>
                 <span>Mobile</span>
               </button>
-              <button type="button" class="device-switch-btn" id="btnDeviceDesktop" data-device="desktop" title="Audit Desktop Form Factor (1350x940)">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <button type="button" class="device-switch-btn" id="btnDeviceDesktop" data-device="desktop"
+                title="Audit Desktop Form Factor (1350x940)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                   <line x1="8" y1="21" x2="16" y2="21"></line>
                   <line x1="12" y1="17" x2="12" y2="21"></line>
@@ -1721,16 +2001,21 @@
         <div class="advanced-trigger-wrap">
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
             <button type="button" class="btn-advanced-toggle" id="advancedToggleBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
               </svg>
               <span>Advanced Throttling & Profiling</span>
-              <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
-            <div id="activeConfigSummary" style="font-size: 11.5px; color: var(--text-subtle); font-family: var(--font-mono);">
+            <div id="activeConfigSummary"
+              style="font-size: 11.5px; color: var(--text-subtle); font-family: var(--font-mono);">
               Single Page &bull; Mobile 4G &bull; Agentic Active &bull; Standard Trace
             </div>
           </div>
@@ -1738,7 +2023,7 @@
           <!-- Expandable Panel -->
           <div class="advanced-panel" id="advancedPanel">
             <div class="adv-grid">
-              
+
               <!-- Throttling Profile -->
               <div class="adv-field">
                 <label class="adv-label" for="throttlingSelect">Network & CPU Throttling</label>
@@ -1758,7 +2043,8 @@
                 </div>
                 <div class="adv-toggle-text">
                   <div class="adv-toggle-title">V8 JavaScript Execution Sampling</div>
-                  <div class="adv-toggle-desc">Captures 100µs CPU profiler samples & trace flamechart for V8 scripts.</div>
+                  <div class="adv-toggle-desc">Captures 100µs CPU profiler samples & trace flamechart for V8 scripts.
+                  </div>
                 </div>
               </label>
 
@@ -1770,7 +2056,8 @@
                 </div>
                 <div class="adv-toggle-text">
                   <div class="adv-toggle-title">Agentic User Journey Telemetry</div>
-                  <div class="adv-toggle-desc">Executes autonomous synthetic scrolling & interaction timespan for realistic UX.</div>
+                  <div class="adv-toggle-desc">Executes autonomous synthetic scrolling & interaction timespan for
+                    realistic UX.</div>
                 </div>
               </label>
 
@@ -1889,7 +2176,8 @@
         </li>
         <li class="scan-step" id="step2">
           <span class="step-icon">&#9679;</span>
-          <span id="step2Text">Navigating to URL & applying network profile (<span id="modalProfileLabel">Mobile 4G</span>)</span>
+          <span id="step2Text">Navigating to URL & applying network profile (<span id="modalProfileLabel">Mobile
+              4G</span>)</span>
         </li>
         <li class="scan-step" id="step3">
           <span class="step-icon">&#9679;</span>
@@ -1913,7 +2201,8 @@
           <line x1="12" y1="16" x2="12" y2="12"></line>
           <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
-        <span class="tip-text" id="tipText">Optimizing Largest Contentful Paint (LCP): Preload key hero banners and web fonts.</span>
+        <span class="tip-text" id="tipText">Optimizing Largest Contentful Paint (LCP): Preload key hero banners and web
+          fonts.</span>
       </div>
 
       <div class="scan-meta">
@@ -1991,7 +2280,7 @@
   <script>
     // Primary Scope State: 'single' | 'multipage'
     let currentScope = 'single';
-    let selectedMaxPages = 3;
+    let selectedMaxPages = 10;
 
     // Elements
     const form = document.getElementById('scanForm');
@@ -2006,6 +2295,18 @@
     const multiPageConfigBar = document.getElementById('multiPageConfigBar');
     const crawlStatusTip = document.getElementById('crawlStatusTip');
     const depthBtns = document.querySelectorAll('.depth-btn');
+
+    // Dynamic Multi-URL Builder Elements
+    const multiUrlContainer = document.getElementById('multiUrlContainer');
+    const extraUrlsList = document.getElementById('extraUrlsList');
+    const btnAddUrl = document.getElementById('btnAddUrl');
+    const btnToggleBulk = document.getElementById('btnToggleBulk');
+    const btnClearExtra = document.getElementById('btnClearExtra');
+    const urlCounterBadge = document.getElementById('urlCounterBadge');
+    const bulkPasteBox = document.getElementById('bulkPasteBox');
+    const bulkPasteInput = document.getElementById('bulkPasteInput');
+    const btnCancelBulk = document.getElementById('btnCancelBulk');
+    const btnImportBulk = document.getElementById('btnImportBulk');
 
     // Switches
     const btnDeviceMobile = document.getElementById('btnDeviceMobile');
@@ -2080,8 +2381,9 @@
 
         inputGroup.classList.add('multipage-mode-active');
         multiPageConfigBar.classList.add('open');
+        multiUrlContainer.classList.add('open');
 
-        urlInput.placeholder = 'https://example.com (or paste multiple URLs separated by commas / lines)';
+        urlInput.placeholder = '1. Primary URL: e.g. https://example.com';
         submitBtnText.textContent = 'Crawl & Audit Site';
 
         if (triggeredByAutoDetect) {
@@ -2095,10 +2397,12 @@
 
         inputGroup.classList.remove('multipage-mode-active');
         multiPageConfigBar.classList.remove('open');
+        multiUrlContainer.classList.remove('open');
 
         urlInput.placeholder = 'https://github.com';
         submitBtnText.textContent = 'Run Audit';
       }
+      updateUrlCounter();
       updateConfigSummary();
     }
 
@@ -2128,6 +2432,116 @@
       if (hasMultipleUrls(urlInput.value) && currentScope !== 'multipage') {
         setAuditScope('multipage', true);
       }
+      updateUrlCounter();
+    });
+
+    // Dynamic Multi-URL Builder Logic
+    function addUrlRow(initialValue = '') {
+      const row = document.createElement('div');
+      row.className = 'url-row';
+      row.innerHTML = `
+        <span class="url-row-index">2</span>
+        <input type="text" class="url-input url-row-input extra-url-input" placeholder="https://example.com/sub-page" value="${initialValue}" inputmode="url">
+        <button type="button" class="icon-btn row-paste-btn" title="Paste URL">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+        </button>
+        <button type="button" class="btn-remove-row" title="Remove URL">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      `;
+
+      const input = row.querySelector('.extra-url-input');
+      const removeBtn = row.querySelector('.btn-remove-row');
+      const pasteBtn = row.querySelector('.row-paste-btn');
+
+      removeBtn.addEventListener('click', () => {
+        row.remove();
+        reindexUrlRows();
+        updateUrlCounter();
+      });
+
+      pasteBtn.addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            input.value = text.trim();
+            updateUrlCounter();
+          }
+        } catch (e) { }
+      });
+
+      input.addEventListener('input', updateUrlCounter);
+
+      extraUrlsList.appendChild(row);
+      reindexUrlRows();
+      updateUrlCounter();
+      if (!initialValue) {
+        input.focus();
+      }
+    }
+
+    function reindexUrlRows() {
+      const rows = document.querySelectorAll('.extra-urls-list .url-row');
+      rows.forEach((r, idx) => {
+        r.querySelector('.url-row-index').textContent = idx + 2;
+      });
+    }
+
+    function updateUrlCounter() {
+      let count = 0;
+      if (urlInput.value.trim()) count++;
+      document.querySelectorAll('.extra-url-input').forEach(inp => {
+        if (inp.value.trim()) count++;
+      });
+      if (urlCounterBadge) {
+        urlCounterBadge.textContent = `${count} URL${count === 1 ? '' : 's'} Queued`;
+      }
+      if (btnClearExtra) {
+        const rows = document.querySelectorAll('.extra-urls-list .url-row');
+        btnClearExtra.style.display = rows.length > 0 ? 'inline-flex' : 'none';
+      }
+    }
+
+    btnAddUrl.addEventListener('click', () => addUrlRow());
+
+    btnToggleBulk.addEventListener('click', () => {
+      bulkPasteBox.classList.toggle('open');
+      if (bulkPasteBox.classList.contains('open')) {
+        bulkPasteInput.focus();
+      }
+    });
+
+    btnCancelBulk.addEventListener('click', () => {
+      bulkPasteBox.classList.remove('open');
+      bulkPasteInput.value = '';
+    });
+
+    btnImportBulk.addEventListener('click', () => {
+      const text = bulkPasteInput.value.trim();
+      if (!text) return;
+      const lines = text.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean);
+      if (lines.length > 0) {
+        if (!urlInput.value.trim() || urlInput.value === 'https://github.com') {
+          urlInput.value = lines[0];
+          lines.slice(1).forEach(u => addUrlRow(u));
+        } else {
+          lines.forEach(u => addUrlRow(u));
+        }
+        bulkPasteBox.classList.remove('open');
+        bulkPasteInput.value = '';
+        showToast(`Imported ${lines.length} URLs!`, true);
+      }
+    });
+
+    btnClearExtra.addEventListener('click', () => {
+      extraUrlsList.innerHTML = '';
+      updateUrlCounter();
     });
 
     // Configuration Summary
@@ -2295,9 +2709,11 @@
     let stepTimeouts = [];
 
     // Overlay Animations
-    function startScanningUI(targetUrl, isMulti) {
+    function startScanningUI(targetUrl, isMulti, urlCount = 1) {
       modalTargetUrl.textContent = targetUrl;
-      scanModalTitle.textContent = isMulti ? 'Running Multi-Page Site Crawl...' : 'Running Performance Audit...';
+      scanModalTitle.textContent = urlCount > 1
+        ? `Running Multi-Page Audit (${urlCount} URLs)...`
+        : (isMulti ? 'Running Multi-Page Site Crawl...' : 'Running Performance Audit...');
 
       const devTitle = selectedDevice === 'desktop' ? 'Desktop' : 'Mobile';
       const throttTitle = throttlingSelect.options[throttlingSelect.selectedIndex].text.split('(')[0].replace(/[📱⚡🚀🐢]/g, '').trim();
@@ -2312,7 +2728,14 @@
       const step5Text = document.getElementById('step5Text');
       const step4 = document.getElementById('step4');
 
-      if (isMulti) {
+      if (urlCount > 1) {
+        step1Text.textContent = 'Spawning headless Chrome browser instance';
+        step2Text.innerHTML = `Loading initial page & applying network profile (<span id="modalProfileLabel">${devTitle} • ${throttTitle}</span>)`;
+        step3Text.textContent = `Auditing ${urlCount} custom URLs sequentially`;
+        step4Text.textContent = 'Measuring Core Web Vitals & synthetic interaction across all pages';
+        step5Text.textContent = 'Synthesizing Multi-Page Flow report with page comparison matrix';
+        step4.style.display = 'flex';
+      } else if (isMulti) {
         step1Text.textContent = 'Spawning headless Chrome browser instance';
         step2Text.innerHTML = `Navigating to initial page & mapping internal routes (<span id="modalProfileLabel">${devTitle} • ${throttTitle}</span>)`;
         step3Text.textContent = `Crawling & auditing discovered sub-pages (up to ${selectedMaxPages} routes)`;
@@ -2429,31 +2852,52 @@
 
     // Form Submission (Supports Single Page or Multi-Page Site Crawl)
     form.addEventListener('submit', async (e) => {
-      let finalUrl = formatUrls(urlInput.value);
-      if (!finalUrl) {
-        e.preventDefault();
-        showToast('Please enter a valid website URL to audit.');
+      e.preventDefault();
+
+      let primary = urlInput.value.trim();
+      let allUrls = [];
+      if (primary) {
+        allUrls.push(...primary.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean));
+      }
+
+      if (currentScope === 'multipage') {
+        document.querySelectorAll('.extra-url-input').forEach(inp => {
+          const val = inp.value.trim();
+          if (val) {
+            allUrls.push(...val.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean));
+          }
+        });
+      }
+
+      allUrls = allUrls.map(u => (/^https?:\/\//i.test(u) ? u : 'https://' + u));
+      allUrls = Array.from(new Set(allUrls));
+
+      if (allUrls.length === 0) {
+        showToast('Please enter at least one valid website URL to audit.');
         return;
       }
 
-      urlInput.value = finalUrl;
-      saveRecentScan(finalUrl);
+      saveRecentScan(allUrls[0]);
 
-      const isMulti = currentScope === 'multipage' || hasMultipleUrls(finalUrl);
+      const isMulti = currentScope === 'multipage' || allUrls.length > 1;
+      const finalUrlString = allUrls.join(', ');
 
       const params = new URLSearchParams({
-        url: finalUrl,
+        url: finalUrlString,
         device: selectedDevice,
         throttling: throttlingSelect.value,
         multiPage: isMulti ? 'true' : 'false',
-        maxPages: isMulti ? selectedMaxPages : '1',
+        maxPages: isMulti ? (allUrls.length > 1 ? String(allUrls.length) : String(selectedMaxPages)) : '1',
         jsSampling: jsSamplingCheckbox.checked ? 'true' : 'false',
         agentic: agenticCheckbox.checked ? 'true' : 'false'
       });
       const scanUrl = `/scan?${params.toString()}`;
 
-      e.preventDefault();
-      startScanningUI(finalUrl, isMulti);
+      const displayTarget = allUrls.length > 1
+        ? `${allUrls.length} URLs (${new URL(allUrls[0]).hostname} + ${allUrls.length - 1} more)`
+        : allUrls[0];
+
+      startScanningUI(displayTarget, isMulti, allUrls.length);
 
       try {
         const res = await fetch(scanUrl);
@@ -2469,7 +2913,7 @@
         setTimeout(() => {
           stopScanningUI();
           if (displayMode === 'embedded') {
-            showReportViewer(html, finalUrl);
+            showReportViewer(html, displayTarget);
           } else {
             const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
             const blobUrl = URL.createObjectURL(blob);

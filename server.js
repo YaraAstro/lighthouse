@@ -42,7 +42,7 @@ app.get('/scan', async (req, res) => {
   const jsSampling = req.query.jsSampling === 'true';
   const agentic = req.query.agentic !== 'false';
   const multiPage = req.query.multiPage === 'true';
-  const maxPages = Math.min(Math.max(parseInt(req.query.maxPages || '3', 10), 1), 5);
+  const maxPages = Math.min(Math.max(parseInt(req.query.maxPages || '3', 10), 1), 10);
 
   if (!targetUrl) {
     return res.status(400).send('URL is required');
@@ -57,7 +57,7 @@ app.get('/scan', async (req, res) => {
 
   const primaryUrl = urlsToScan[0];
 
-  console.log(`Starting scan for: ${urlsToScan.join(', ')} [${device.toUpperCase()} | Throttling: ${throttling} | Multi-Page: ${multiPage || urlsToScan.length > 1} | MaxPages: ${maxPages}]`);
+  console.log(`Starting scan for: ${urlsToScan.join(', ')} [${device.toUpperCase()} | Throttling: ${throttling} | Multi-Page: ${multiPage || urlsToScan.length > 1} | Total URLs: ${urlsToScan.length}]`);
 
   // Configure throttling profile
   let throttlingSettings;
@@ -159,11 +159,12 @@ app.get('/scan', async (req, res) => {
       await flow.endTimespan();
     }
 
-    // Step 3: Multi-Page Scan (explicit URLs or auto-discovered sub-pages)
+    // Step 3: Multi-Page Scan (explicit user URLs or auto-discovered sub-pages)
     if (urlsToScan.length > 1) {
-      for (let i = 1; i < Math.min(urlsToScan.length, maxPages); i++) {
+      const limit = Math.min(urlsToScan.length, 25); // allow up to 25 custom URLs
+      for (let i = 1; i < limit; i++) {
         const nextUrl = urlsToScan[i];
-        console.log(`Scanning additional page (${i + 1}/${Math.min(urlsToScan.length, maxPages)}): ${nextUrl}`);
+        console.log(`Scanning user URL (${i + 1}/${limit}): ${nextUrl}`);
         try {
           await flow.navigate(nextUrl, { stepName: `Page ${i + 1}: ${new URL(nextUrl).pathname || nextUrl}` });
         } catch (pageErr) {
