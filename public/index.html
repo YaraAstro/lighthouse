@@ -383,6 +383,84 @@
       color: #94a3b8;
     }
 
+    /* Triple-Mode Lighthouse Execution Strip */
+    .triple-mode-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(8px);
+      flex-wrap: wrap;
+    }
+
+    .triple-mode-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .mode-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary);
+      animation: pulseDot 2s infinite;
+    }
+
+    .triple-mode-chips {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mode-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 9999px;
+      font-size: 11.5px;
+      color: var(--text-main);
+      cursor: default;
+      transition: all 0.2s ease;
+    }
+
+    .mode-chip:hover {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.14);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .mode-chip-radio {
+      color: var(--primary);
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .mode-chip-title {
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .mode-chip-sub {
+      color: #38bdf8;
+      font-size: 10.5px;
+      font-weight: 500;
+    }
+
     /* URL Input Bar */
     .input-group {
       position: relative;
@@ -1819,6 +1897,31 @@
 
         </div>
 
+        <!-- Triple-Mode Lighthouse Execution Indicator -->
+        <div class="triple-mode-strip">
+          <div class="triple-mode-label">
+            <span class="mode-badge-dot"></span>
+            <span>Triple-Mode Lighthouse Audit Engine (All 3 Run Per Page):</span>
+          </div>
+          <div class="triple-mode-chips">
+            <div class="mode-chip" title="Mode 1: Cold page load, Core Web Vitals (FCP, LCP, CLS, TBT), Best Practices & SEO">
+              <span class="mode-chip-radio">&#9673;</span>
+              <span class="mode-chip-title">Navigation</span>
+              <span class="mode-chip-sub">(default)</span>
+            </div>
+            <div class="mode-chip" title="Mode 2: Interaction timespan, synthetic scrolling, layout shifts & INP telemetry">
+              <span class="mode-chip-radio">&#9673;</span>
+              <span class="mode-chip-title">Timespan</span>
+              <span class="mode-chip-sub">(active)</span>
+            </div>
+            <div class="mode-chip" title="Mode 3: Post-interaction rendered DOM, accessibility tree & DOM snapshot">
+              <span class="mode-chip-radio">&#9673;</span>
+              <span class="mode-chip-title">Snapshot</span>
+              <span class="mode-chip-sub">(active)</span>
+            </div>
+          </div>
+        </div>
+
         <!-- URL Input Group -->
         <div class="input-group" id="inputGroup">
           <div class="input-icon" id="inputIcon">
@@ -2176,20 +2279,19 @@
         </li>
         <li class="scan-step" id="step2">
           <span class="step-icon">&#9679;</span>
-          <span id="step2Text">Navigating to URL & applying network profile (<span id="modalProfileLabel">Mobile
-              4G</span>)</span>
+          <span id="step2Text">🧭 Mode 1/3: Navigation Cold Load & Core Web Vitals audit (<span id="modalProfileLabel">Mobile 4G</span>)</span>
         </li>
         <li class="scan-step" id="step3">
           <span class="step-icon">&#9679;</span>
-          <span id="step3Text">Measuring Core Web Vitals & V8 traces (<span id="modalTraceLabel">Standard</span>)</span>
+          <span id="step3Text">⏱️ Mode 2/3: Timespan Interaction & Scroll Telemetry audit (<span id="modalTraceLabel">Standard</span>)</span>
         </li>
         <li class="scan-step" id="step4">
           <span class="step-icon">&#9679;</span>
-          <span id="step4Text">Executing Agentic User Journey & interaction timespan</span>
+          <span id="step4Text">📸 Mode 3/3: Snapshot Rendered DOM & Accessibility audit</span>
         </li>
         <li class="scan-step" id="step5">
           <span class="step-icon">&#9679;</span>
-          <span id="step5Text">Synthesizing audit metrics & compiling Lighthouse report</span>
+          <span id="step5Text">Synthesizing unified Triple-Mode flow report & matrix</span>
         </li>
       </ul>
 
@@ -2717,8 +2819,10 @@
 
       const devTitle = selectedDevice === 'desktop' ? 'Desktop' : 'Mobile';
       const throttTitle = throttlingSelect.options[throttlingSelect.selectedIndex].text.split('(')[0].replace(/[📱⚡🚀🐢]/g, '').trim();
-      document.getElementById('modalProfileLabel').textContent = `${devTitle} • ${throttTitle}`;
-      document.getElementById('modalTraceLabel').textContent = jsSamplingCheckbox.checked ? 'V8 Profiler (100µs)' : 'Standard Trace';
+      const modalProfileEl = document.getElementById('modalProfileLabel');
+      if (modalProfileEl) modalProfileEl.textContent = `${devTitle} • ${throttTitle}`;
+      const modalTraceEl = document.getElementById('modalTraceLabel');
+      if (modalTraceEl) modalTraceEl.textContent = jsSamplingCheckbox.checked ? 'V8 Profiler (100µs)' : 'Standard Trace';
 
       // Update step descriptions dynamically based on Multi-Page vs Single Page
       const step1Text = document.getElementById('step1Text');
@@ -2729,26 +2833,26 @@
       const step4 = document.getElementById('step4');
 
       if (urlCount > 1) {
-        step1Text.textContent = 'Spawning headless Chrome browser instance';
-        step2Text.innerHTML = `Loading initial page & applying network profile (<span id="modalProfileLabel">${devTitle} • ${throttTitle}</span>)`;
-        step3Text.textContent = `Auditing ${urlCount} custom URLs sequentially`;
-        step4Text.textContent = 'Measuring Core Web Vitals & synthetic interaction across all pages';
-        step5Text.textContent = 'Synthesizing Multi-Page Flow report with page comparison matrix';
+        step1Text.textContent = `Spawning headless Chrome browser (${devTitle} • ${throttTitle})`;
+        step2Text.innerHTML = `🧭 Mode 1/3: Navigation Cold Load across all ${urlCount} custom URLs`;
+        step3Text.textContent = `⏱️ Mode 2/3: Timespan Interaction & Scroll Telemetry across all pages`;
+        step4Text.textContent = `📸 Mode 3/3: Snapshot Rendered DOM & Accessibility audit across all pages`;
+        step5Text.textContent = 'Synthesizing Multi-Page Flow report with comparison matrix';
         step4.style.display = 'flex';
       } else if (isMulti) {
-        step1Text.textContent = 'Spawning headless Chrome browser instance';
-        step2Text.innerHTML = `Navigating to initial page & mapping internal routes (<span id="modalProfileLabel">${devTitle} • ${throttTitle}</span>)`;
-        step3Text.textContent = `Crawling & auditing discovered sub-pages (up to ${selectedMaxPages} routes)`;
-        step4Text.textContent = 'Measuring Core Web Vitals & synthetic interaction across pages';
-        step5Text.textContent = 'Synthesizing Multi-Page Flow report with page comparison matrix';
+        step1Text.textContent = `Spawning headless Chrome browser (${devTitle} • ${throttTitle})`;
+        step2Text.innerHTML = `🧭 Mode 1/3: Navigation Cold Load & sub-page discovery (up to ${selectedMaxPages} routes)`;
+        step3Text.textContent = '⏱️ Mode 2/3: Timespan Interaction & Scroll Telemetry across discovered pages';
+        step4Text.textContent = '📸 Mode 3/3: Snapshot Rendered DOM & Accessibility audit across discovered pages';
+        step5Text.textContent = 'Synthesizing Multi-Page Flow report with comparison matrix';
         step4.style.display = 'flex';
       } else {
-        step1Text.textContent = 'Spawning headless Chrome browser session';
-        step2Text.innerHTML = `Navigating to URL & applying network profile (<span id="modalProfileLabel">${devTitle} • ${throttTitle}</span>)`;
-        step3Text.innerHTML = `Measuring Core Web Vitals & V8 traces (<span id="modalTraceLabel">${jsSamplingCheckbox.checked ? 'V8 Profiler' : 'Standard'}</span>)`;
-        step4Text.textContent = 'Executing Agentic User Journey & interaction timespan';
-        step5Text.textContent = 'Synthesizing audit metrics & compiling Lighthouse report';
-        step4.style.display = agenticCheckbox.checked ? 'flex' : 'none';
+        step1Text.textContent = `Spawning headless Chrome browser session (${devTitle} • ${throttTitle})`;
+        step2Text.innerHTML = `🧭 Mode 1/3: Navigation Cold Load & Core Web Vitals audit`;
+        step3Text.innerHTML = `⏱️ Mode 2/3: Timespan Interaction & Scroll Telemetry (<span id="modalTraceLabel">${jsSamplingCheckbox.checked ? 'V8 Profiler (100µs)' : 'Standard Trace'}</span>)`;
+        step4Text.textContent = '📸 Mode 3/3: Snapshot Rendered DOM & Accessibility audit';
+        step5Text.textContent = 'Synthesizing unified Triple-Mode flow report & metrics';
+        step4.style.display = 'flex';
       }
 
       scanOverlay.classList.add('active');

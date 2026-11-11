@@ -31,6 +31,64 @@ async function closeBrowserSafely(browser, timeoutMs = 2500) {
   }
 }
 
+// Helper to safely extract pathname from URL
+function getSafePathname(urlStr) {
+  try {
+    return new URL(urlStr).pathname || '/';
+  } catch (e) {
+    return urlStr;
+  }
+}
+
+// Helper to safely extract origin from URL
+function getSafeOrigin(urlStr) {
+  try {
+    return new URL(urlStr).origin;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Executes the 3 core Lighthouse User Flow modes for a given page:
+// 1. Mode 1: Navigation (Cold load, Core Web Vitals, category scoring)
+// 2. Mode 2: Timespan (Interactive scroll & user journey telemetry)
+// 3. Mode 3: Snapshot (Rendered DOM & accessibility state)
+async function auditPageWithTripleModes(flow, page, url, pageLabel, isAgentic = true) {
+  const cleanLabel = pageLabel || getSafePathname(url);
+
+  // Mode 1: Navigation (Cold Load & CWV)
+  console.log(`  [Mode 1/3: Navigation] Auditing page load for: ${url}`);
+  await flow.navigate(url, { stepName: `🧭 Navigation: ${cleanLabel} (Cold Load & CWV)` });
+
+  // Mode 2: Timespan (Interaction & Scroll Telemetry)
+  console.log(`  [Mode 2/3: Timespan] Auditing interaction & scroll for: ${url}`);
+  await flow.startTimespan({ stepName: `⏱️ Timespan: ${cleanLabel} (Interaction & Scroll Telemetry)` });
+  try {
+    await page.evaluate(() => {
+      window.scrollBy({ top: Math.min(window.innerHeight, (document.body?.scrollHeight || 1000) / 2), behavior: 'smooth' });
+    });
+    await new Promise(resolve => setTimeout(resolve, 500));
+    if (isAgentic) {
+      await page.evaluate(() => {
+        const interactive = document.querySelector('button, a[href], input, [role="button"]');
+        if (interactive) interactive.focus();
+      });
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+    await page.evaluate(() => {
+      window.scrollBy({ top: -Math.min(window.innerHeight, (document.body?.scrollHeight || 1000) / 2), behavior: 'smooth' });
+    });
+    await new Promise(resolve => setTimeout(resolve, 300));
+  } catch (e) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  await flow.endTimespan();
+
+  // Mode 3: Snapshot (Post-interaction DOM & Accessibility state)
+  console.log(`  [Mode 3/3: Snapshot] Capturing rendered DOM & A11y snapshot for: ${url}`);
+  await flow.snapshot({ stepName: `📸 Snapshot: ${cleanLabel} (DOM & A11y State)` });
+}
+
 // Serve the static HTML file from the "public" folder
 app.use(express.static('public'));
 
@@ -100,15 +158,27 @@ app.get('/scan', async (req, res) => {
     };
   }
 
-  const settingsOverrides = {
-    formFactor: device,
-    throttling: throttlingSettings
+  // Build explicit Lighthouse config for Desktop or Mobile
+  const flowConfig = device === 'desktop' ? {
+    extends: 'lighthouse:default',
+    settings: {
+      ...desktopConfig.settings,
+      throttling: throttlingSettings
+    }
+  } : {
+    extends: 'lighthouse:default',
+    settings: {
+      formFactor: 'mobile',
+      throttling: throttlingSettings,
+      screenEmulation: {
+        mobile: true,
+        width: 412,
+        height: 823,
+        deviceScaleFactor: 2.625,
+        disabled: false
+      }
+    }
   };
-
-  if (device === 'desktop') {
-    settingsOverrides.screenEmulation = desktopConfig.settings.screenEmulation;
-    settingsOverrides.emulatedUserAgent = desktopConfig.settings.emulatedUserAgent;
-  }
 
   const chromeArgs = [
     '--no-sandbox',
@@ -129,12 +199,20 @@ app.get('/scan', async (req, res) => {
       args: chromeArgs
     });
     const page = await browser.newPage();
+
+    // Explicitly apply device viewport and user-agent to Puppeteer page
+    if (device === 'desktop') {
+      await page.setViewport({ width: 1350, height: 940, deviceScaleFactor: 1 });
+      if (desktopConfig.settings?.emulatedUserAgent) {
+        await page.setUserAgent(desktopConfig.settings.emulatedUserAgent);
+      }
+    } else {
+      await page.setViewport({ width: 412, height: 823, deviceScaleFactor: 2.625, isMobile: true, hasTouch: true });
+    }
     
     const flowOptions = {
-      name: `Audit for ${targetUrl}`,
-      configContext: {
-        settingsOverrides
-      }
+      name: `Audit for ${primaryUrl} (${device.toUpperCase()})`,
+      config: flowConfig
     };
 
     if (jsSampling) {
@@ -145,61 +223,53 @@ app.get('/scan', async (req, res) => {
 
     const flow = await startFlow(page, flowOptions);
 
-    // Step 1: Initial Navigation & Page Load
-    await flow.navigate(primaryUrl, { stepName: `Initial Page: ${new URL(primaryUrl).pathname || '/'}` });
+    // Audit Primary Page with all 3 modes: Navigation, Timespan, Snapshot
+    console.log(`Auditing primary page with Triple Modes (Navigation + Timespan + Snapshot): ${primaryUrl}`);
+    await auditPageWithTripleModes(flow, page, primaryUrl, `Initial Page (${getSafePathname(primaryUrl)})`, agentic);
 
-    // Step 2: Agentic Synthetic User Interaction (if enabled)
-    if (agentic) {
-      console.log(`Running Agentic interaction timespan for ${primaryUrl}...`);
-      await flow.startTimespan({ stepName: 'Agentic User Interaction & Scroll Telemetry' });
-      await page.evaluate(() => window.scrollBy({ top: 800, behavior: 'smooth' }));
-      await new Promise(resolve => setTimeout(resolve, 800));
-      await page.evaluate(() => window.scrollBy({ top: -800, behavior: 'smooth' }));
-      await new Promise(resolve => setTimeout(resolve, 400));
-      await flow.endTimespan();
-    }
-
-    // Step 3: Multi-Page Scan (explicit user URLs or auto-discovered sub-pages)
+    // Multi-Page Scan: Audit each additional URL with all 3 modes
     if (urlsToScan.length > 1) {
       const limit = Math.min(urlsToScan.length, 25); // allow up to 25 custom URLs
       for (let i = 1; i < limit; i++) {
         const nextUrl = urlsToScan[i];
-        console.log(`Scanning user URL (${i + 1}/${limit}): ${nextUrl}`);
+        console.log(`Auditing user URL (${i + 1}/${limit}) with Triple Modes: ${nextUrl}`);
         try {
-          await flow.navigate(nextUrl, { stepName: `Page ${i + 1}: ${new URL(nextUrl).pathname || nextUrl}` });
+          await auditPageWithTripleModes(flow, page, nextUrl, `Page ${i + 1} (${getSafePathname(nextUrl)})`, agentic);
         } catch (pageErr) {
           console.warn(`Failed to audit page ${nextUrl}:`, pageErr.message);
         }
       }
     } else if (multiPage) {
       console.log(`Discovering sub-pages for multi-page audit on ${primaryUrl} (limit: ${maxPages - 1})...`);
-      const origin = new URL(primaryUrl).origin;
-      const discoveredSubPages = await page.evaluate((orig, limit) => {
-        const anchors = Array.from(document.querySelectorAll('a[href]'));
-        const found = [];
-        for (const a of anchors) {
-          try {
-            const parsed = new URL(a.href, window.location.origin);
-            if (parsed.origin === orig && parsed.pathname !== '/' && parsed.pathname !== window.location.pathname) {
-              if (!parsed.pathname.match(/\.(pdf|zip|png|jpe?g|svg|webp|mp4|gif|ico|woff2?|css|js)$/i) && !parsed.hash) {
-                if (!found.includes(parsed.href)) {
-                  found.push(parsed.href);
+      const origin = getSafeOrigin(primaryUrl);
+      if (origin) {
+        const discoveredSubPages = await page.evaluate((orig, limit) => {
+          const anchors = Array.from(document.querySelectorAll('a[href]'));
+          const found = [];
+          for (const a of anchors) {
+            try {
+              const parsed = new URL(a.href, window.location.origin);
+              if (parsed.origin === orig && parsed.pathname !== '/' && parsed.pathname !== window.location.pathname) {
+                if (!parsed.pathname.match(/\.(pdf|zip|png|jpe?g|svg|webp|mp4|gif|ico|woff2?|css|js)$/i) && !parsed.hash) {
+                  if (!found.includes(parsed.href)) {
+                    found.push(parsed.href);
+                  }
                 }
               }
-            }
-          } catch(e) {}
-        }
-        return found.slice(0, limit);
-      }, origin, maxPages - 1);
+            } catch(e) {}
+          }
+          return found.slice(0, limit);
+        }, origin, maxPages - 1);
 
-      let pageIndex = 2;
-      for (const subUrl of discoveredSubPages) {
-        console.log(`Scanning discovered sub-page (${pageIndex}): ${subUrl}`);
-        try {
-          await flow.navigate(subUrl, { stepName: `Sub-Page ${pageIndex}: ${new URL(subUrl).pathname}` });
-          pageIndex++;
-        } catch (subErr) {
-          console.warn(`Failed to audit subpage ${subUrl}:`, subErr.message);
+        let pageIndex = 2;
+        for (const subUrl of discoveredSubPages) {
+          console.log(`Auditing discovered sub-page (${pageIndex}) with Triple Modes: ${subUrl}`);
+          try {
+            await auditPageWithTripleModes(flow, page, subUrl, `Sub-Page ${pageIndex} (${getSafePathname(subUrl)})`, agentic);
+            pageIndex++;
+          } catch (subErr) {
+            console.warn(`Failed to audit subpage ${subUrl}:`, subErr.message);
+          }
         }
       }
     }
